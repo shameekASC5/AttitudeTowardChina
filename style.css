@@ -15,14 +15,15 @@ html {
 }
 
 body {
-  font: 14px/1 'Open Sans', sans-serif;
+  font: 15px/1 Roboto,Helvetica Neue,sans-serif; 
+  /* font-family: Roboto,Helvetica Neue,sans-serif; */
   color: #555;
   background-color: #f4f0f2;
 }
 
 main {
   min-width: 320px;
-  max-width: 70%;
+  width: 70%;
   margin: 0 auto;
   height: 100%;
   /* background: #fff; */
@@ -51,9 +52,11 @@ section h2 {
 } */
 
 
-h1 {
+#title {
+  font-family: Roboto,Helvetica Neue,sans-serif;
   padding-bottom: 30px;
-  font-weight: 800;
+  font-weight: 300;
+  font-size: 3vw;
   text-align: center;
 }
 
@@ -85,7 +88,8 @@ footer {
   width: 100%;
   padding-bottom: 60%;
   vertical-align: top;
-  /* overflow: hidden; */
+  /* border: 1px dashed black; */
+  overflow: auto;
 }
 
 .svg-content {
@@ -97,11 +101,17 @@ footer {
 }
 
 .x-axis { 
-   font: 17px sans-serif; 
+   /* font: 17px sans-serif;  */
+   font: inherit;
 }
 
 .y-axis { 
-  font: 17px sans-serif; 
+  font: inherit;
+  /* font: 17px sans-serif;  */
+}
+
+.legend {
+  font: inherit;
 }
 
 .overlay {
@@ -129,7 +139,7 @@ footer {
 
 #source_selector * {
   padding: 0.5em;
-  font-size: 1.25vw;
+  font-size: 1vw;
 }
 
 .tabs {
