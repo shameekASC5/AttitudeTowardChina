@@ -8,9 +8,10 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="text/javascript" src="script.js" defer></script>
   </head>
+  <!-- onload="citationsGraph()" -->
   <body onload="citationsGraph()">
    <div id="header">
-      <img style = "height: 7em" src="assets/ccc_logo.png">
+      <img style = "height: 7em; width: 27em" src="assets/ccc_logo.png">
       <img style = "height: 6em; width: 20%;" src="assets/PU-standard.svg">
    </div>
    <bold>
@@ -33,8 +34,8 @@
            
       <section id="content1">
          <form id= "source_selector" onsubmit="false" target="_top">
-            <label for="data_source" style="font-size: xx-large; background-color: white;" >Data Source:</label>
-            <select name="data_source" id="data_source" onchange="updateSource()" style="font-size: large;">
+            <label for="data_source" style="background-color: white;" >Data Source:</label>
+            <select name="data_source" id="data_source" onchange="updateSource()" style="">
               <option value="citations">Citation Data</option>
               <option value="papers">Paper Publishing Data</option>
               <option value="roads">Street/Road Data</option>
@@ -42,8 +43,8 @@
               <option value="patent">Patent Data</option>
             </select>
          </form>
-         <div id ="svg_container">
-            <svg width="1000" height="500"></svg>
+         <div id ="svg-container">
+            <!-- <svg class = "svg-content"></svg> -->
          </div>
         
       </section>

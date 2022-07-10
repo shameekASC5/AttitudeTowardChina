@@ -1,7 +1,15 @@
-var svg = d3.select("svg"),
-    margin = {top: 15, right: 15, bottom: 20, left: 50},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom;
+var svg = d3.select("div#svg-container")
+   .append("svg")
+   .attr("preserveAspectRatio", "xMinYMin meet")
+   .attr("viewBox", "0 0 1000 500")
+   .classed("svg-content", true);
+
+d3.select("svg"),
+   margin = {top: 15, right: 15, bottom: 20, left: 50},
+   width =  1000 - margin.left - margin.right,
+   height = 500 - margin.top - margin.bottom;
+   //  width = +svg.attr("width") - margin.left - margin.right,
+   //  height = +svg.attr("height") - margin.top - margin.bottom;
 
 // set graph scale
 var x = d3.scaleTime().range([margin.left, width - margin.right])
@@ -103,8 +111,9 @@ function drawLines(data, lines, colors, lineNames, animateLines = true, legYPos 
             .attr("stroke-width", strokeWidth)
             .style("stroke", colors[i])
          graph.append("text")
-         .attr("x", legXPos + textOffsetX)
-         .attr("y", legYPos+ 30*(i+1))
+            .attr("class", "legend")
+            .attr("x", legXPos + textOffsetX)
+            .attr("y", legYPos+ 30*(i+1))
             // .style("text-anchor", "beginning")
             .text(lineNames[i])
             .attr("alignment-baseline","middle")
@@ -132,6 +141,7 @@ function drawLines(data, lines, colors, lineNames, animateLines = true, legYPos 
             .attr("stroke-width", strokeWidth)
             .style("stroke", colors[i])
          graph.append("text")
+            .attr("class", "legend")
             .attr("x", legXPos + textOffsetX)
             .attr("y", legYPos+ 30*(i+1))
             .text(lineNames[i])
@@ -157,6 +167,7 @@ function drawLines(data, lines, colors, lineNames, animateLines = true, legYPos 
             .style("stroke-dasharray", "6,6")
             .style("stroke", colors[i])
          graph.append("text")
+            .attr("class", "legend")
             .attr("x", legXPos + textOffsetX)
             .attr("y", legYPos+ 30*(i+1))
             .text(lineNames[i])
@@ -192,6 +203,7 @@ function setTwoCountryLegend() {
    .attr("r", legRadius)
    .style("fill", USA_primary)
    graph.append("text")
+   .attr("class", "legend")
    .attr("x", legXPos + textOffsetX)
    .attr("y", legYPos)
    .text("USA")
@@ -202,6 +214,7 @@ function setTwoCountryLegend() {
    .attr("r", legRadius)
    .style("fill", PRC_primary)
    graph.append("text")
+   .attr("class", "legend")
    .attr("x", legXPos + textOffsetX)
    .attr("y", legYPos+30)
    .text("PRC")
@@ -345,12 +358,12 @@ const buildCitationGraph = function(data) {
 
       focus.append("text")
          .attr("class", "usa")
-         .attr("x", 250)
+         .attr("x", 260)
          .attr("y", 65)
 
       focus.append("text")
          .attr("class", "prc")
-         .attr("x", 250)
+         .attr("x", 260)
          .attr("y", 95)
 
 		var overlay = svg.append("rect")
@@ -770,6 +783,7 @@ const buildRoadGraph = function (data) {
    drawLines(data, lines, colors, lineNames, true, 100);
 };
 
+// handle d3.csv file retrevial 
 async function gatherData(source, conversion) {
    const data = await d3.csv(source, conversion);
    return data;
@@ -778,6 +792,7 @@ async function gatherData(source, conversion) {
 // parse year data into Date objects that scaleTime() can handle
 var parseTime = d3.timeParse("%Y");
 
+// convert the data from strings to integers
 const scienceFileConversion = function (d) {
    d.year = parseTime(d.year);
    // Strings --> Integers
