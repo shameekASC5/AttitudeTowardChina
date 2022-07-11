@@ -880,6 +880,54 @@ function updateSource(){
       console.log("Error, this value is not associated with a valid graph");
    
 }
+
+function downloadSvg() {
+
+   var svg = document.getElementsByClassName("svg-content")[0];
+   var serializer = new XMLSerializer();
+   var source = serializer.serializeToString(svg);
+   source = source.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink='); // Fix root xlink without namespace
+   
+   source = source.replace(/ns\d+:href/g, 'xlink:href'); // Safari NS namespace fix.
+   
+   
+   if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+       source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+   }
+   if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+       source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+   }
+   
+   
+   var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+   var svgBlob = new Blob([preface, source], { type: "image/svg+xml;charset=utf-8" });
+   var svgUrl = URL.createObjectURL(svgBlob);
+   var downloadLink = document.createElement("a");
+   downloadLink.href = svgUrl;
+   downloadLink.download = name;
+   document.body.appendChild(downloadLink);
+   downloadLink.click();
+   document.body.removeChild(downloadLink);
+}
+
+function save_as_svg(){
+
+
+   var svg_data = document.getElementsByClassName("svg-content")[0].innerHTML //put id of your svg element here
+
+   var head = '<svg title="graph" xmlns="http://www.w3.org/2000/svg">'
+
+   //if you have some additional styling like graph edges put them inside <style> tag
+
+   var style = '<style>circle {cursor: pointer;stroke-width: 1.5px;}text {font: 10px arial;}path {stroke: DimGrey;stroke-width: 1.5px;}</style>'
+
+   var full_svg = head +  style + svg_data + "</svg>"
+   var blob = new Blob([full_svg], {type: "image/svg+xml"});  
+   saveAs(blob, "graph.svg");
+
+
+};
+
 /*
       // https://stackoverflow.com/questions/68496555/d3-js-draw-circle-between-dash
       // dashed and dotted line
