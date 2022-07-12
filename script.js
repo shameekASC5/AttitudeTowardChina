@@ -367,6 +367,7 @@ const buildCitationGraph = function(data) {
          .attr("y", 95)
 
 		var overlay = svg.append("rect")
+         .attr("fill", "none")
 			.attr("class", "overlay")
 			.attr("x", margin.left)
 			.attr("y", margin.top)
@@ -503,6 +504,7 @@ const buildPapersGraph = function (data) {
          .attr("y", 95)
 
 		var overlay = svg.append("rect")
+         .attr("fill", "none")
 			.attr("class", "overlay")
 			.attr("x", margin.left)
 			.attr("y", margin.top)
@@ -688,6 +690,7 @@ const buildPatentGraph = function (data) {
          .attr("y", 95)
 
 		var overlay = svg.append("rect")
+         .attr("fill", "none")
 			.attr("class", "overlay")
 			.attr("x", margin.left)
 			.attr("y", margin.top)
@@ -909,25 +912,6 @@ function downloadSvg() {
    downloadLink.click();
    document.body.removeChild(downloadLink);
 }
-
-function save_as_svg(){
-
-
-   var svg_data = document.getElementsByClassName("svg-content")[0].innerHTML //put id of your svg element here
-
-   var head = '<svg title="graph" xmlns="http://www.w3.org/2000/svg">'
-
-   //if you have some additional styling like graph edges put them inside <style> tag
-
-   var style = '<style>circle {cursor: pointer;stroke-width: 1.5px;}text {font: 10px arial;}path {stroke: DimGrey;stroke-width: 1.5px;}</style>'
-
-   var full_svg = head +  style + svg_data + "</svg>"
-   var blob = new Blob([full_svg], {type: "image/svg+xml"});  
-   saveAs(blob, "graph.svg");
-
-
-};
-
 /*
       // https://stackoverflow.com/questions/68496555/d3-js-draw-circle-between-dash
       // dashed and dotted line
