@@ -274,57 +274,6 @@ const buildCitationGraph = function(data) {
    let lineNames = ["US Paper Citations", "PRC Paper Citations"];
    // Draw graph
    let path = drawLines(data, lines, colors, lineNames, animateGraph);
-   /* Zoom/pan tutorial: https://bl.ocks.org/LemoNode/7ac1d41fe75fe7d2d9cb85e78aad6303
-    https://www.freecodecamp.org/news/get-ready-to-zoom-and-pan-like-a-pro-after-reading-this-in-depth-tutorial-5d963b0a153e/
-   
-   // svg.call(zoom);
-
-   // function zoom(svg) {
-
-	// 	var extent = [
-	// 		[margin.left, margin.top], 
-	// 		[width - margin.right, height - margin.top]
-	// 	];
-
-	// 	var zooming = d3.zoom()
-	// 		.scaleExtent([1, 3])
-	// 		.translateExtent(extent)
-	// 		.extent(extent)
-	// 		.on("zoom", zoomed);
-
-	// 	svg.call(zooming);
-
-	// 	function zoomed() {
-
-	// 		x.rangeRound([margin.left, width - margin.right]
-	// 			.map(d => d3.event.transform.applyX(d)));
-         
-   //       y.rangeRound([height - margin.bottom, margin.top]
-   //          .map(d => d3.event.transform.applyY(d)));
-
-	// 		graph.select(".path1")
-   //          .attr("stroke-width", strokeWidth*d3.event.transform.k)
-   //          .attr("d", USA_citations)
-   //          .attr("transform", d3.event.transform.toString())
-         
-   //       graph.select(".path2")
-   //          .attr("stroke-width", strokeWidth*d3.event.transform.k)
-   //          .attr("d", PRC_citations)
-   //          .attr("transform", d3.event.transform.toString());
-			
-   //       graph.select(".x-axis")
-	// 			.call(d3.axisBottom(x).tickSizeOuter(0));
-   //       graph.select(".y-axis")
-   //          .call(d3.axisLeft(y).tickFormat(function(d){return d/1000000}).tickSizeOuter(0));
-   //       // hide circle since location is off
-   //       svg.select(".circle1").attr("r", "0");
-   //       // svg.select(".circle2").attr("stroke", "white").attr("fill", "white");
-
-	// 	}
-	// }
-
-   */
-
 	svg.call(hover)
 
 	function hover() {
@@ -932,13 +881,28 @@ function roadGraph() {
    d3.selectAll("svg>*").remove();
    gatherData("data/roads.csv", roadFileConversion).then(buildRoadGraph);
 }
-
+// default is citations
 var dataSources = {
-   citations: false,
-   papers: false,
-   roads: false,
-   internet: false,
-   patent: false,
+   citations: {
+      selected: true,
+      filename: "science.csv"
+   },
+   papers: {
+      selected: false,
+      filename: "science.csv"
+   },
+   roads: {
+      selected: false,
+      filename: "roads.csv"
+   },
+   internet: {
+      selected: false,
+      filename: "internet.csv"
+   },
+   patent: {
+      selected: false,
+      filename: "patent.csv"
+   },
 }
 // sets the current data source
 function updateDataSource (
@@ -956,11 +920,11 @@ function updateDataSource (
    if (values.indexOf(current_value) > -1) {
       functions[values.indexOf(current_value)]();
       // set dataSource
-      dataSources[current_value] = true;
+      dataSources[current_value].selected = true;
       // reset other dataSources to false
       Object.keys(dataSources).forEach(key => {
          if (key != current_value)
-            dataSources[key] = false;
+            dataSources[key].selected = false;
        });
       updateGroupSelector();
    }
@@ -974,7 +938,7 @@ function updateGroupSelector() {
    console.log("updating group selec")
    group_selector = document.getElementById("group_source");
    // check that the values haven't already been updated
-   if (dataSources.internet && (group_selector.options.length < 1 || group_selector.options[group_selector.options.length-1].text != "Mobile") ) {
+   if (dataSources.internet.selected && (group_selector.options.length < 1 || group_selector.options[group_selector.options.length-1].text != "Mobile") ) {
       let text = ["China (domestic)", "United States (domestic)", "Broadband", "Access", "Mobile"]
       let values = ["chinaOnly", "usOnly", "broadband", "access", "mobile"];
       for (let i = 0; i < values.length; i++) {
@@ -987,7 +951,7 @@ function updateDataFromSubGroup() {
    console.log("woohoo")
    let values = ["chinaOnly", "usOnly", "broadband", "access", "mobile", "all"];
    let current_value = document.getElementById("subgroup_selector").elements["group_source"].value;
-   if (dataSources.internet) {
+   if (dataSources.internet.selected) {
       internetGroups = {
          chinaOnly: false,
          usOnly: false,
@@ -1014,34 +978,79 @@ function updateDataFromSubGroup() {
    }
 }
 
-function downloadSvg() {
-   alert("You are about to download the svg graphic displayed on the webpage.")
+function downloadDataSource() {
+   let permissionGranted = confirm("Press OK to download the csv data file.");
+   if (permissionGranted) {
+      base = "data/"
+      download_button = document.getElementById("source_downloader");
+      Object.keys(dataSources).forEach(key => {
+         if (dataSources[key].selected) {
+            download_button.href = base + dataSources[key].filename;
+            console.log(base + dataSources[key].filename);
+         }
+       });
+   }
+   else 
+      console.log("User cancelled file download.")
+}
 
-   var svg = document.getElementsByClassName("svg-content")[0];
-   var serializer = new XMLSerializer();
-   var source = serializer.serializeToString(svg);
-   source = source.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink='); // Fix root xlink without namespace
-   
-   source = source.replace(/ns\d+:href/g, 'xlink:href'); // Safari NS namespace fix.
-   
-   
-   if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
-       source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+function downloadSvg() {
+   let permissionGranted = confirm("Press OK to download the svg graphic displayed on the webpage.");
+   if (permissionGranted) {
+      var svg = document.getElementsByClassName("svg-content")[0];
+      var serializer = new XMLSerializer();
+      var source = serializer.serializeToString(svg);
+      source = source.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink='); // Fix root xlink without namespace
+      
+      source = source.replace(/ns\d+:href/g, 'xlink:href'); // Safari NS namespace fix.
+      
+      
+      if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+          source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+      if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+          source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+      }
+      
+      
+      var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+      var svgBlob = new Blob([preface, source], { type: "image/svg+xml;charset=utf-8" });
+      var svgUrl = URL.createObjectURL(svgBlob);
+      var downloadLink = document.createElement("a");
+      downloadLink.href = svgUrl;
+      downloadLink.download = "svg-graphic";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
    }
-   if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
-       source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    else 
+      console.log("User cancelled file download.")
+}
+
+function infoModal() {
+   // Get the modal
+   var modal = document.getElementById("myModal");
+
+   // Get the button that opens the modal
+   var btn = document.getElementsByClassName("fa-circle-question")[0];
+
+   // Get the <span> element that closes the modal
+   var span = document.getElementsByClassName("close")[0];
+
+   // When the user clicks on the button, open the modal
+   modal.style.display = "block";
+
+   // When the user clicks on <span> (x), close the modal
+   span.onclick = function() {
+   modal.style.display = "none";
    }
-   
-   
-   var preface = '<?xml version="1.0" standalone="no"?>\r\n';
-   var svgBlob = new Blob([preface, source], { type: "image/svg+xml;charset=utf-8" });
-   var svgUrl = URL.createObjectURL(svgBlob);
-   var downloadLink = document.createElement("a");
-   downloadLink.href = svgUrl;
-   downloadLink.download = name;
-   document.body.appendChild(downloadLink);
-   downloadLink.click();
-   document.body.removeChild(downloadLink);
+
+   // When the user clicks anywhere outside of the modal, close it
+   window.onclick = function(event) {
+   if (event.target == modal) {
+      modal.style.display = "none";
+   }
+   }
 }
 
 function toggle(id) {

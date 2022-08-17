@@ -127,14 +127,81 @@ footer {
  
  
 /* Tab bar  */
+
+#info {
+  float: right;
+  /* display: flex;
+  flex-direction: row;
+  justify-content: end; */
+}
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  text-align: left;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 #source_selector {
-  /* display: flex; */
+  display: flex;
   flex-direction: row;
    justify-content: center;
    align-items: center;
-   align-content: center;
+   /* align-content: center; */
    margin-bottom: 2%;
 }
+#subgroup_selector {
+  display: flex;
+  flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   align-content: left;
+   margin-bottom: 2%;
+}
+
+.downloader:hover {
+  color: #e77500;
+}
+
+#data_source {
+  width: 50%;
+}
+
+#group_source {
+  width: 50%;
+}
+
 #settings_container {
   display: flex;
   flex-flow: row;

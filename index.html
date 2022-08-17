@@ -35,23 +35,53 @@
       <label for="tab4" style="margin-left: -10px">FAQ</label>
            
       <section id="content1">
+         <div id="info">
+            <i onclick="infoModal()" class="fa-solid fa-circle-question"></i>
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+
+               <!-- Modal content -->
+               <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <h2>Want to know how to use the data visualizer?</h2>
+                  <h4>Choosing Data</h4>
+                  <p>Use the first selector labeled "Data Source" to choose from our available data. Currently we have
+                     data on science, internet use, road construction and patents.
+                  </p>
+                  <h4>Isolating Groups</h4>
+                  <p>For data sources with many lines, you can select a subcategory to view line groups with fewer lines. This extends into domestic and cross-country analysis.</p>
+                  <span>
+                     <i class="downloader fa-solid fa-download"></i>
+                     This button allows you to download the data source files in .CSV format and the generated graphs in .SVG format
+                  </span>
+                  <p>Some text in the Modal..</p>
+               </div>
+            
+            </div>
+         </div>
          <div id="filters">
             <form id= "source_selector" onsubmit="false" target="_top">
             <label for="data_source" style="background-color: white;">Data Source:</label>
             <select name="data_source" id="data_source" onchange="updateDataSource()">
-               <option value="citations">Citation Data</option>
-               <option value="papers">Paper Publishing Data</option>
-               <option value="roads">Street/Road Data</option>
-               <option value="internet">Internet Usage Data</option>
-               <option value="patent">Patent Data</option>
+               <option value="citations">Academia: Citations</option>
+               <option value="papers">Academia: Paper Publishing</option>
+               <option value="roads">Infrastructure: Street/Road </option>
+               <option value="internet">Technology: Internet Usage </option>
+               <option value="patent">Technology: Patent Data</option>
                </select>
-               <i id="source_downloader" class="fa-solid fa-download"></i>
+               <a id="source_downloader">
+                  <i onclick="downloadDataSource()" class="downloader fa-solid fa-download" ></i>
+               </a>
+
             </form>
             <form id="subgroup_selector" onsubmit="false" target="_top">
-               <label for="group_source" style="background-color: white;">Sub-Group:</label>
+               <label for="group_source" style="background-color: white;">Subcategory:</label>
                <select name="group_source" id="group_source" onchange="updateDataFromSubGroup()">
                   <option value="">Full Data</option>
                   </select>
+                  <a style="color:white">
+                     <i class="fa-solid fa-download"></i>
+                  </a>
                </form>
             <div id ="settings_container">
                <div id="animate">
@@ -79,6 +109,7 @@
          <div id ="svg-container">
             <!-- <svg class = "svg-content"></svg> -->
          </div>
+         <span style="padding-right: 0.5em">Download SVG</span>
          <i onclick="downloadSvg()" id="graph_downloader" class="fa-solid fa-download"></i>
 
 
