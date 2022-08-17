@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Attitude Toward China </title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel= "stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="text/javascript" src="script.js" defer></script>
@@ -34,20 +35,53 @@
       <label for="tab4" style="margin-left: -10px">FAQ</label>
            
       <section id="content1">
-         <form id= "source_selector" onsubmit="false" target="_top">
+         <div id="filters">
+            <form id= "source_selector" onsubmit="false" target="_top">
             <label for="data_source" style="background-color: white;">Data Source:</label>
-            <select name="data_source" id="data_source" onchange="updateSource()">
-              <option value="citations">Citation Data</option>
-              <option value="papers">Paper Publishing Data</option>
-              <option value="roads">Street/Road Data</option>
-              <option value="internet">Internet Usage Data</option>
-              <option value="patent">Patent Data</option>
-            </select>
-         </form>
+            <select name="data_source" id="data_source" onchange="updateDataSource()">
+               <option value="citations">Citation Data</option>
+               <option value="papers">Paper Publishing Data</option>
+               <option value="roads">Street/Road Data</option>
+               <option value="internet">Internet Usage Data</option>
+               <option value="patent">Patent Data</option>
+               </select>
+               <i id="source_downloader" class="fa-solid fa-download"></i>
+            </form>
+            <form id="subgroup_selector" onsubmit="false" target="_top">
+               <label for="group_source" style="background-color: white;">Sub-Group:</label>
+               <select name="group_source" id="group_source" onchange="updateDataFromSubGroup()">
+                  <option value="">Full Data</option>
+                  </select>
+               </form>
+            <div id ="settings_container">
+               <div id="animate">
+                  <span>Animate</span>
+                  <i id="animation_toggle" class="fa-solid fa-toggle-on" onclick="toggleAnimation()"></i> 
+               </div>
+
+               <div id="stack-chart">
+                  <span>Stack Chart</span>
+                  <i id="stack_toggle" class="fa-solid fa-toggle-off" onclick="toggleStackChart()"></i> 
+               </div>
+
+               <div id="line-chart">
+                  <span>Line Chart</span>
+                  <i id="line_toggle" class="fa-solid fa-toggle-on" onclick="toggleLineChart()"></i> 
+               </div>
+
+               <div id="histogram-chart">
+                  <span>Histogram</span>
+                  <i id="histogram_toggle" class="fa-solid fa-toggle-off" onclick="toggleHistogramChart()"></i> 
+               </div>
+         
+            </div>
+         </div>
          <div id ="svg-container">
             <!-- <svg class = "svg-content"></svg> -->
          </div>
-        
+         <i onclick="downloadSvg()" id="graph_downloader" class="fa-solid fa-download"></i>
+
+
       </section>
 
       <section id="content2">

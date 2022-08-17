@@ -43,7 +43,6 @@ section h2 {
 }
 
 #content1 {
-  /* display: inline-block; */
   text-align: center;
 }
 
@@ -60,7 +59,7 @@ section h2 {
   text-align: center;
 }
 
-p {
+#content2 p {
   margin: 0 0 10px;
   line-height: 1.5;
   font-size: 1.2em;
@@ -136,8 +135,25 @@ footer {
    align-content: center;
    margin-bottom: 2%;
 }
+#settings_container {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 2em;
+}
+
+#filters {
+  display: flex;
+  flex-flow: column;
+}
 
 #source_selector * {
+  padding: 0.5em;
+  font-size: 1vw;
+}
+
+#subgroup_selector * {
   padding: 0.5em;
   font-size: 1vw;
 }

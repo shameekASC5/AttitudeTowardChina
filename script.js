@@ -16,12 +16,16 @@ var x = d3.scaleTime().range([margin.left, width - margin.right])
 var y = d3.scaleLinear().rangeRound([height-margin.bottom, margin.top]);
 
 var USA_primary = "#0099C5";
+var USA_secondary = "#CCEAF3";
+var USA_tertiary = "#88D5F3";
 var PRC_primary = "#ff0000";
-var PRC_secondary = "#73C6B6";
-var USA_secondary = "#8E44AD";
+var PRC_secondary = "#B0000D";
+var PRC_tertiary = "#CF666D";
 
 var strokeWidth = 3;
 var animationDuration = 5;
+var animateGraph = true; // determines whether lines will animate
+var fillOpacity = "0.0";
 
 // animates the drawing of line
 function animateSolidLine(path) {
@@ -95,7 +99,8 @@ function drawLines(data, lines, colors, lineNames, animateLines = true, legYPos 
       if (count == 1 || lines.length <= 2)   {
          paths.push(graph.append("path")
             .datum(data)
-            .attr("fill-opacity", "0")
+            .attr("fill-opacity", fillOpacity)
+            .attr("fill", colors[i])
             .attr("clip-path", "url(#clip)")
             .attr("class", "path" + count)
             .attr("stroke", colors[i])
@@ -123,7 +128,8 @@ function drawLines(data, lines, colors, lineNames, animateLines = true, legYPos 
          let dashing = "1,7";
          paths.push(graph.append("path")
             .datum(data)
-            .attr("fill-opacity", "0")
+            .attr("fill-opacity", fillOpacity)
+            .attr("fill", colors[i])
             .attr("clip-path", "url(#clip)")
             .attr("stroke-width", strokeWidth)
             .attr("stroke", colors[i])
@@ -151,7 +157,8 @@ function drawLines(data, lines, colors, lineNames, animateLines = true, legYPos 
       else if (count == 3) {
          paths.push(graph.append("path")
             .datum(data)
-            .attr("fill-opacity", "0")
+            .attr("fill-opacity", fillOpacity)
+            .attr("fill", colors[i])
             .attr("clip-path", "url(#clip)")
             .attr("stroke", colors[i])
             .attr("stroke-width", strokeWidth)
@@ -266,7 +273,7 @@ const buildCitationGraph = function(data) {
    let colors = [USA_primary, PRC_primary];
    let lineNames = ["US Paper Citations", "PRC Paper Citations"];
    // Draw graph
-   let path = drawLines(data, lines, colors, lineNames);
+   let path = drawLines(data, lines, colors, lineNames, animateGraph);
    /* Zoom/pan tutorial: https://bl.ocks.org/LemoNode/7ac1d41fe75fe7d2d9cb85e78aad6303
     https://www.freecodecamp.org/news/get-ready-to-zoom-and-pan-like-a-pro-after-reading-this-in-depth-tutorial-5d963b0a153e/
    
@@ -407,15 +414,14 @@ const buildCitationGraph = function(data) {
 				.text(dateFormat(d.year));
          
          focus.selectAll(".usa")
-				.text(d.us_paper_citation);
+				.text(d.us_paper_citation.toLocaleString());
          
          focus.selectAll(".prc")
-				.text(d.cn_paper_citation);
+				.text(d.cn_paper_citation.toLocaleString());
 
 		}
    }
 };
-
 
 const buildPapersGraph = function (data) {
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -454,7 +460,7 @@ const buildPapersGraph = function (data) {
    let lineNames = ["US Papers", "PRC Papers"];
 
    // Draw graph
-   drawLines(data, lines, colors, lineNames);
+   drawLines(data, lines, colors, lineNames, animateGraph);
    svg.call(hover)
 
 	function hover() {
@@ -544,18 +550,30 @@ const buildPapersGraph = function (data) {
 				.text(dateFormat(d.year));
          
          focus.selectAll(".usa")
-				.text(d.us_paper_count);
+				.text(d.us_paper_count.toLocaleString());
          
          focus.selectAll(".prc")
-				.text(d.cn_paper_count);
+				.text(d.cn_paper_count.toLocaleString());
 
 		}
    }
 };
 
-const buildInternetUseGraph = function (data) {
+// Will generate graph from internet use data based on line groups as 
+// defined by parameter names
+const buildInternetUseGraph = function (data, 
+   internetGroups = {
+      chinaOnly: false,
+      usOnly: false,
+      broadband: false,
+      access: false,
+      mobile: false
+   }
+   ) {
+   generateAll = !internetGroups.chinaOnly && !internetGroups.usOnly && !internetGroups.broadband && !internetGroups.access && !internetGroups.mobile;
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-   
+   console.log("check func")
+   console.log(internetGroups)
    // Line(s) declaration
    let us_internet_access =  d3.line()
    .x(function(d) { return x(d.year); })
@@ -599,11 +617,45 @@ const buildInternetUseGraph = function (data) {
        .attr("x", "-6em")
        .attr("text-anchor", "end")
        .text("Number of Internet Users (millions)"); 
+   
+   var lines = []
+   var colors = []
+   var lineNames = []
 
-   let lines = [us_internet_access, us_broadband_subscriptions, us_mobile_internet_users, cn_internet_access, cn_broadband_subscriptions, cn_mobile_internet_users];
-   let colors = [USA_primary, USA_primary, USA_primary, PRC_primary, PRC_primary, PRC_primary];
-   let lineNames = ["US Internet Access", "US Broadband Subscriptions", "US Mobile Internet Users", "PRC Internet Access", "PRC Broadband Subscriptions", "PRC Mobile Internet Users" ];
-   drawLines(data, lines, colors, lineNames);
+   if (generateAll) {
+      lines = [us_internet_access, us_broadband_subscriptions, us_mobile_internet_users, cn_internet_access, cn_broadband_subscriptions, cn_mobile_internet_users];
+      colors = [USA_primary, USA_secondary, USA_tertiary, PRC_primary, PRC_secondary, PRC_tertiary];
+      lineNames = ["US Internet Access", "US Broadband Subscriptions", "US Mobile Internet Users", "PRC Internet Access", "PRC Broadband Subscriptions", "PRC Mobile Internet Users" ];
+   }
+   else if (internetGroups.chinaOnly) {
+      lines = [cn_internet_access, cn_broadband_subscriptions, cn_mobile_internet_users];
+      colors = [PRC_primary, PRC_secondary, PRC_tertiary];
+      lineNames = ["PRC Internet Access", "PRC Broadband Subscriptions", "PRC Mobile Internet Users" ];
+   }
+   else if (internetGroups.usOnly) {
+      lines = [us_internet_access, us_broadband_subscriptions, us_mobile_internet_users];
+      colors = [USA_primary, USA_secondary, USA_tertiary];
+      lineNames = ["US Internet Access", "US Broadband Subscriptions", "US Mobile Internet Users"];
+   }
+   else if (internetGroups.broadband) {
+      lines = [us_broadband_subscriptions, cn_broadband_subscriptions];
+      colors = [USA_primary, PRC_primary];
+      lineNames = ["US Broadband Subscriptions", "PRC Broadband Subscriptions"];
+   }
+   else if (internetGroups.access) {
+      lines = [us_internet_access,cn_internet_access];
+      colors = [USA_primary, PRC_primary];
+      lineNames = ["US Internet Access","PRC Internet Access"];
+   }
+   else if (internetGroups.mobile) {
+      lines = [us_mobile_internet_users, cn_mobile_internet_users];
+      colors = [USA_primary, PRC_primary];
+      lineNames = ["US Mobile Internet Users", "PRC Mobile Internet Users" ];
+   }
+   console.log(lines, colors, lineNames)
+   drawLines(data, lines, colors, lineNames, true);
+
+
 };
 
 const buildPatentGraph = function (data) {
@@ -640,7 +692,7 @@ const buildPatentGraph = function (data) {
    let lines = [us_patent_assignments, cn_patent_assignments];
    let colors = [USA_primary, PRC_primary];
    let lineNames = ["US", "China"];
-   drawLines(data, lines, colors, lineNames);
+   drawLines(data, lines, colors, lineNames, animateGraph);
 
    svg.call(hover(100));
    function hover() {
@@ -730,10 +782,10 @@ const buildPatentGraph = function (data) {
                .text(dateFormat(d['Year']));
             
             focus.selectAll(".usa")
-               .text(d["US patents assignment"]);
+               .text(d["US patents assignment"].toLocaleString());
             
             focus.selectAll(".prc")
-               .text(d["中国专利授权量"]);
+               .text(d["中国专利授权量"].toLocaleString());
       
       }
    }
@@ -781,7 +833,7 @@ const buildRoadGraph = function (data) {
        .text("Highway Length (in 10,000 kilometers)"); 
 
    let lines = [us_public_roads, cn_highway, us_expressway, cn_expressway];
-   let colors = [USA_primary, PRC_primary, USA_primary, PRC_primary];
+   let colors = [USA_primary, PRC_primary, USA_secondary, PRC_secondary];
    let lineNames = ["US public road and street", "PRC Highways", "US interstate and other freeway/expressways", "PRC Highways"];
    drawLines(data, lines, colors, lineNames, true, 100);
 };
@@ -837,7 +889,6 @@ const roadFileConversion = function (d) {
    d["China: Length of Expressways (by 10,000 kilometers)"] = +d["China: Length of Expressways (by 10,000 kilometers)"].replace(/,/g, "");
    d["US: Length of Interstate and Other Freeways and Expressways (by 10,000 kilometers)"] = +d["US: Length of Interstate and Other Freeways and Expressways (by 10,000 kilometers)"].replace(/,/g, "");
 
-   console.log(d)
    return d;
 }
 
@@ -853,10 +904,21 @@ function papersGraph() {
    gatherData("data/science.csv", scienceFileConversion).then(buildPapersGraph);
 }
 
-function internetUseGraph() {
+function internetUseGraph
+   (
+      internetGroups = {
+         chinaOnly: false,
+         usOnly: false,
+         broadband: false,
+         access: false,
+         mobile: false
+      }
+   ) 
+{
+   
    // clear graph
    d3.selectAll("svg>*").remove();
-   gatherData("data/internet.csv", internetFileConversion).then(buildInternetUseGraph);
+   gatherData("data/internet.csv", internetFileConversion).then(data => buildInternetUseGraph(data, internetGroups));
 }
 
 function patentGraph() {
@@ -871,20 +933,89 @@ function roadGraph() {
    gatherData("data/roads.csv", roadFileConversion).then(buildRoadGraph);
 }
 
-function updateSource(){ 
+var dataSources = {
+   citations: false,
+   papers: false,
+   roads: false,
+   internet: false,
+   patent: false,
+}
+// sets the current data source
+function updateDataSource (
+   internetGroups = {
+      chinaOnly: false,
+      usOnly: false,
+      broadband: false,
+      access: false,
+      mobile: false
+   }
+) { 
    let values = ["citations", "papers", "roads", "internet", "patent"];
    let functions = [citationsGraph, papersGraph, roadGraph, internetUseGraph, patentGraph]
    let current_value = document.getElementById("source_selector").elements["data_source"].value;
    if (values.indexOf(current_value) > -1) {
       functions[values.indexOf(current_value)]();
-      console.log(values.indexOf(current_value));
+      // set dataSource
+      dataSources[current_value] = true;
+      // reset other dataSources to false
+      Object.keys(dataSources).forEach(key => {
+         if (key != current_value)
+            dataSources[key] = false;
+       });
+      updateGroupSelector();
    }
    else 
       console.log("Error, this value is not associated with a valid graph");
    
 }
 
+// updates the options in sub-group selector based on chosen data source
+function updateGroupSelector() {
+   console.log("updating group selec")
+   group_selector = document.getElementById("group_source");
+   // check that the values haven't already been updated
+   if (dataSources.internet && (group_selector.options.length < 1 || group_selector.options[group_selector.options.length-1].text != "Mobile") ) {
+      let text = ["China (domestic)", "United States (domestic)", "Broadband", "Access", "Mobile"]
+      let values = ["chinaOnly", "usOnly", "broadband", "access", "mobile"];
+      for (let i = 0; i < values.length; i++) {
+         group_selector.options[group_selector.options.length] = new Option(text[i], values[i]);
+      } 
+   }
+}
+// updates graph to chosen sub-group from dataSource
+function updateDataFromSubGroup() {
+   console.log("woohoo")
+   let values = ["chinaOnly", "usOnly", "broadband", "access", "mobile", "all"];
+   let current_value = document.getElementById("subgroup_selector").elements["group_source"].value;
+   if (dataSources.internet) {
+      internetGroups = {
+         chinaOnly: false,
+         usOnly: false,
+         broadband: false,
+         access: false,
+         mobile: false
+      }
+      if (current_value == values[0]) {
+         internetGroups.chinaOnly = true;
+      }
+      else if (current_value == values[1]) {
+         internetGroups.usOnly = true;
+      }      
+      else if (current_value == values[2]) {
+         internetGroups.broadband = true;
+      }
+      else if (current_value == values[3]) {
+         internetGroups.access = true;
+      }
+      else if (current_value == values[4]) {
+         internetGroups.mobile = true;
+      }
+      internetUseGraph(internetGroups)
+   }
+}
+
 function downloadSvg() {
+   alert("You are about to download the svg graphic displayed on the webpage.")
 
    var svg = document.getElementsByClassName("svg-content")[0];
    var serializer = new XMLSerializer();
@@ -912,6 +1043,86 @@ function downloadSvg() {
    downloadLink.click();
    document.body.removeChild(downloadLink);
 }
+
+function toggle(id) {
+   if (document.getElementById(id).className == "fa-solid fa-toggle-on")
+      document.getElementById(id).className = ("fa-solid fa-toggle-off");
+   else
+      document.getElementById(id).className = "fa-solid fa-toggle-on";
+}
+
+function multiToggle(id) {
+   relevant_toggle_ids = ['stack_toggle', 'line_toggle', 'histogram_toggle']
+   // Flip toggle on and turn other graph toggles off
+   if (id == relevant_toggle_ids[0]) {
+      document.getElementById(id).className = ("fa-solid fa-toggle-on");
+      document.getElementById(relevant_toggle_ids[1]).className = ("fa-solid fa-toggle-off");
+      document.getElementById(relevant_toggle_ids[2]).className = ("fa-solid fa-toggle-off");
+   }
+   else if (id == relevant_toggle_ids[1]) {
+      document.getElementById(id).className = ("fa-solid fa-toggle-on");
+      document.getElementById(relevant_toggle_ids[0]).className = ("fa-solid fa-toggle-off");
+      document.getElementById(relevant_toggle_ids[2]).className = ("fa-solid fa-toggle-off");
+   }
+   else if (id == relevant_toggle_ids[2])
+   {
+      document.getElementById(id).className = ("fa-solid fa-toggle-on");
+      document.getElementById(relevant_toggle_ids[0]).className = ("fa-solid fa-toggle-off");
+      document.getElementById(relevant_toggle_ids[1]).className = ("fa-solid fa-toggle-off");
+   }
+
+}
+
+function toggleAnimation() {
+   toggle('animation_toggle');
+   animateGraph = !animateGraph;
+   updateDataSource();
+}
+
+function toggleStackChart() {
+   id = 'stack_toggle';
+   // Turn off individually, turn on and shut other toggles off
+   if (document.getElementById(id).className == "fa-solid fa-toggle-on") {
+      toggle(id);
+      // svg.selectAll('*').remove();
+      fillOpacity = "0";
+      updateDataSource();
+   }
+   else {
+      multiToggle(id);
+      fillOpacity = "1"
+      updateDataSource();
+     animateGraph = false;
+   }
+}
+
+function toggleLineChart() {
+   id = 'line_toggle';
+   // Turn off individually, turn on and shut other toggles off
+   if (document.getElementById(id).className == "fa-solid fa-toggle-on") {
+      toggle(id);
+   }
+   else {
+      multiToggle(id);
+      fillOpacity = "0";
+      updateDataSource();
+   }
+   // Change current graph to stack view
+
+}
+
+function toggleHistogramChart() {
+   id = 'histogram_toggle';
+   // Turn off individually, turn on and shut other toggles off
+   if (document.getElementById(id).className == "fa-solid fa-toggle-on")
+      toggle(id);
+   else 
+      multiToggle(id);
+   // Change current graph to stack view
+
+}
+
+
 /*
       // https://stackoverflow.com/questions/68496555/d3-js-draw-circle-between-dash
       // dashed and dotted line
