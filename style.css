@@ -18,7 +18,8 @@ body {
   font: 15px/1 Roboto,Helvetica Neue,sans-serif; 
   /* font-family: Roboto,Helvetica Neue,sans-serif; */
   color: #555;
-  background-color: #f4f0f2;
+  /* background-color: #f4f0f2; */
+  /* background-color: white; */
 }
 
 main {
@@ -46,17 +47,21 @@ section h2 {
   text-align: center;
 }
 
-/* #content3 {
-  height: 95vh;
-} */
+#buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
 
 
 #title {
   font-family: Roboto,Helvetica Neue,sans-serif;
   padding-bottom: 30px;
   font-weight: 300;
-  font-size: 3vw;
+  font-size: 5vw;
   text-align: center;
+  margin-bottom: 1.5vw;
 }
 
 #content2 p {
@@ -66,7 +71,8 @@ section h2 {
 }
 
 footer {
-  background-color: #eee;
+  /* background-color: #eee; */
+  background-color: white;
   color: #f58025;
   padding: 20px;
   /* position: fixed; */
@@ -85,7 +91,7 @@ footer {
   display: inline-block;
   position: relative;
   width: 100%;
-  padding-bottom: 60%;
+  padding-bottom: 52%;
   vertical-align: top;
   /* border: 1px dashed black; */
   overflow: auto;
@@ -181,6 +187,13 @@ footer {
    /* align-content: center; */
    margin-bottom: 2%;
 }
+
+#source_selector label, select {
+  padding: 0.5em;
+  font-size: 1vw;
+}
+
+
 #subgroup_selector {
   display: flex;
   flex-direction: row;
@@ -188,6 +201,35 @@ footer {
    align-items: center;
    align-content: left;
    margin-bottom: 2%;
+}
+
+#subgroup_selector label, select {
+  padding: 0.5em;
+  font-size: 1vw;
+}
+
+#graphtype_selector {
+  display: flex;
+  flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   align-content: left;
+   margin-bottom: 2%;
+}
+
+#graphtype_selector label, select {
+  padding: 0.5em;
+  font-size: 1vw;
+}
+
+#buttons a  {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+}
+#buttons a span  {
+  font-size: 1em;
+  padding-top: 0.5em;
 }
 
 .downloader:hover {
@@ -199,6 +241,10 @@ footer {
 }
 
 #group_source {
+  width: 50%;
+}
+
+#graph_type {
   width: 50%;
 }
 
@@ -215,15 +261,7 @@ footer {
   flex-flow: column;
 }
 
-#source_selector * {
-  padding: 0.5em;
-  font-size: 1vw;
-}
 
-#subgroup_selector * {
-  padding: 0.5em;
-  font-size: 1vw;
-}
 
 .tabs {
   display: none;

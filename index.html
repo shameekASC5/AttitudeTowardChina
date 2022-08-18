@@ -22,10 +22,10 @@
 
    <main>
       
-      <input id="tab1" type="radio" class = "tabs" name="tabs" checked>
+      <!-- <input id="tab1" type="radio" class = "tabs" name="tabs" checked>
       <label for="tab1">Data Visualization</label>
-        
-      <input id="tab2" type="radio" class = "tabs" name="tabs">
+         -->
+      <!-- <input id="tab2" type="radio" class = "tabs" name="tabs">
       <label for="tab2" style="margin-left: -10px">About Us</label>
       
       <input id="tab3" type="radio" class = "tabs" name="tabs">
@@ -33,32 +33,43 @@
         
       <input id="tab4" type="radio" class = "tabs" name="tabs">
       <label for="tab4" style="margin-left: -10px">FAQ</label>
-           
-      <section id="content1">
+            -->
          <div id="info">
-            <i onclick="infoModal()" class="fa-solid fa-circle-question"></i>
+            <i onclick="infoModal()" class="fa-solid fa-circle-question fa-xl"></i>
             <!-- The Modal -->
             <div id="myModal" class="modal">
 
                <!-- Modal content -->
                <div class="modal-content">
                   <span class="close">&times;</span>
-                  <h2>Want to know how to use the data visualizer?</h2>
+                  <h2>Data Visualizer User Guide</h2>
                   <h4>Choosing Data</h4>
-                  <p>Use the first selector labeled "Data Source" to choose from our available data. Currently we have
-                     data on science, internet use, road construction and patents.
+                  <p>Use the first selector labeled <i>"Data Source"</i> to choose from our available data. Currently we have data on science, internet use, road construction and patents.
                   </p>
                   <h4>Isolating Groups</h4>
-                  <p>For data sources with many lines, you can select a subcategory to view line groups with fewer lines. This extends into domestic and cross-country analysis.</p>
-                  <span>
-                     <i class="downloader fa-solid fa-download"></i>
-                     This button allows you to download the data source files in .CSV format and the generated graphs in .SVG format
-                  </span>
-                  <p>Some text in the Modal..</p>
+                  <p>For data sources with many lines, you can select a subcategory using the second selector labeled <i>"Subcategory"</i> to view line groups with fewer lines. This extends into domestic and cross-country analysis.</p>
+                  <h4>Buttons</h4>
+                  <p>
+                     <i class="fa-solid fa-video fa-xl"></i>
+                     Click the video button to disable the graphs animation.
+                  </p>
+                  <p>
+                     <i class="fa-solid fa-video-slash fa-xl"></i>
+                     Click the slashed video button to animate the graph and watch the lines grow! Keep in mind that some graphs such as stack charts are not built for traditional line animation and may appear skewed.
+                  </p>
+                  <p>
+                     <i class="fa-solid fa-file-arrow-down fa-xl"></i>
+                     This button allows you to download the data source files in CSV format. 
+                  </p>
+                  <p>
+                     <i class="downloader fa-solid fa-chart-line fa-xl"></i>
+                     This button allows you to download the generated graphs in SVG format.
+                  </p>
                </div>
             
             </div>
          </div>
+         
          <div id="filters">
             <form id= "source_selector" onsubmit="false" target="_top">
             <label for="data_source" style="background-color: white;">Data Source:</label>
@@ -69,21 +80,33 @@
                <option value="internet">Technology: Internet Usage </option>
                <option value="patent">Technology: Patent Data</option>
                </select>
-               <a id="source_downloader">
-                  <i onclick="downloadDataSource()" class="downloader fa-solid fa-download" ></i>
-               </a>
-
+               <!-- <a id="source_downloader">
+                  <i onclick="downloadDataSource()" class="fa-solid fa-file-arrow-down fa-xl"></i>
+               </a> -->
             </form>
             <form id="subgroup_selector" onsubmit="false" target="_top">
                <label for="group_source" style="background-color: white;">Subcategory:</label>
                <select name="group_source" id="group_source" onchange="updateDataFromSubGroup()">
                   <option value="">Full Data</option>
                   </select>
-                  <a style="color:white">
-                     <i class="fa-solid fa-download"></i>
-                  </a>
-               </form>
-            <div id ="settings_container">
+                  <!-- <a>
+                     <i class="fa-solid fa-chart-line fa-xl"></i>
+                  </a> -->
+            </form>
+            <form id="graphtype_selector" onsubmit="false" target="_top">
+               <label for="graph_type" style="background-color: white;">Graphic Type:</label>
+               <select name="graph_type" id="graph_type" onchange="updateGraphType()">
+                  <option value="line">Line Chart</option>
+                  <option value="stack">Stack Chart</option>
+                  <option value="histogram">Histogram Chart</option>
+                  </select>
+                  <!-- <a>
+                     <i onclick="toggleAnimation()" id="animation_bt" class="downloader fa-solid fa-video-slash fa-xl"></i>
+                  </a> -->
+
+            </form>
+
+            <!-- <div id ="settings_container">
                <div id="animate">
                   <span>Animate</span>
                   <i id="animation_toggle" class="fa-solid fa-toggle-on" onclick="toggleAnimation()"></i> 
@@ -104,18 +127,30 @@
                   <i id="histogram_toggle" class="fa-solid fa-toggle-off" onclick="toggleHistogramChart()"></i> 
                </div>
          
-            </div>
+            </div> -->
          </div>
+         <!-- <span style="padding-right: 0.5em">Download SVG</span>
+         <i onclick="downloadSvg()" id="graph_downloader" class="fa-solid fa-download"></i> -->
          <div id ="svg-container">
-            <!-- <svg class = "svg-content"></svg> -->
          </div>
-         <span style="padding-right: 0.5em">Download SVG</span>
-         <i onclick="downloadSvg()" id="graph_downloader" class="fa-solid fa-download"></i>
+         <div id="buttons">
+            <a id="source_downloader">
+               <i onclick="downloadDataSource()" class="downloader fa-solid fa-file-arrow-down fa-2x"></i>
+               <span>CSV data</span>
+            </a>
+            <a>
+               <i onclick="toggleAnimation()" id="animation_btn" class="downloader fa-solid fa-video-slash fa-2x"></i>
+               <span>Animation</span>
+            </a>
+            <a>
+               <i onclick="downloadSvg()" id="graph_downloader" class="downloader fa-solid fa-chart-line fa-2x"></i>
+               <span>SVG graph</span>
+            </a>
+         </div>
 
+      
 
-      </section>
-
-      <section id="content2">
+      <!-- <section id="content2">
          <h2>About the Project</h2>
          <p>
             We are social scientists who believe in the importance of understanding social reality for public policy and public discourse. After achieving rapid economic growth since the Economic Reform that began in 1978, China now impacts the rest of the world in significant ways, in almost all domains and walks of life. Yet, little is known about people’s attitudes towards China. Most policy discussions about China’s international relationships have focused mainly on the attitudes of political and business elites in other countries. It is time to correct the imbalance.
@@ -229,7 +264,7 @@
          <p>
             Coming soon!
          </p>
-       </section>
+       </section> -->
     </main>
     <footer>
       <p>

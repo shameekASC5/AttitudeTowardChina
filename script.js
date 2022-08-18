@@ -24,7 +24,7 @@ var PRC_tertiary = "#CF666D";
 
 var strokeWidth = 3;
 var animationDuration = 5;
-var animateGraph = true; // determines whether lines will animate
+var animateGraph = false; // determines whether lines will animate
 var fillOpacity = "0.0";
 
 // animates the drawing of line
@@ -510,19 +510,11 @@ const buildPapersGraph = function (data) {
 
 // Will generate graph from internet use data based on line groups as 
 // defined by parameter names
-const buildInternetUseGraph = function (data, 
-   internetGroups = {
-      chinaOnly: false,
-      usOnly: false,
-      broadband: false,
-      access: false,
-      mobile: false
-   }
-   ) {
-   generateAll = !internetGroups.chinaOnly && !internetGroups.usOnly && !internetGroups.broadband && !internetGroups.access && !internetGroups.mobile;
+const buildInternetUseGraph = function (data) {
+   generateAll = !dataSources.internet.groups.chinaOnly && !dataSources.internet.groups.usOnly && !dataSources.internet.groups.broadband && !dataSources.internet.groups.access && !dataSources.internet.groups.mobile;
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
    console.log("check func")
-   console.log(internetGroups)
+   console.log(dataSources.internet.groups)
    // Line(s) declaration
    let us_internet_access =  d3.line()
    .x(function(d) { return x(d.year); })
@@ -572,39 +564,48 @@ const buildInternetUseGraph = function (data,
    var lineNames = []
 
    if (generateAll) {
-      lines = [us_internet_access, us_broadband_subscriptions, us_mobile_internet_users, cn_internet_access, cn_broadband_subscriptions, cn_mobile_internet_users];
-      colors = [USA_primary, USA_secondary, USA_tertiary, PRC_primary, PRC_secondary, PRC_tertiary];
-      lineNames = ["US Internet Access", "US Broadband Subscriptions", "US Mobile Internet Users", "PRC Internet Access", "PRC Broadband Subscriptions", "PRC Mobile Internet Users" ];
+      lines = [ 
+         cn_internet_access, cn_mobile_internet_users,
+         us_internet_access,us_mobile_internet_users, 
+         cn_broadband_subscriptions, us_broadband_subscriptions,
+      ];
+      colors = [
+         PRC_primary, PRC_secondary, PRC_tertiary,
+         USA_primary, USA_secondary, USA_tertiary, 
+      ];
+      lineNames = [
+      "PRC Internet Access", "PRC Mobile Internet Users",
+      "US Internet Access", "US Mobile Internet Users",
+      "PRC Broadband Subscriptions", "US Broadband Subscriptions",  
+      ];
    }
-   else if (internetGroups.chinaOnly) {
+   else if (dataSources.internet.groups.chinaOnly) {
       lines = [cn_internet_access, cn_broadband_subscriptions, cn_mobile_internet_users];
       colors = [PRC_primary, PRC_secondary, PRC_tertiary];
       lineNames = ["PRC Internet Access", "PRC Broadband Subscriptions", "PRC Mobile Internet Users" ];
    }
-   else if (internetGroups.usOnly) {
-      lines = [us_internet_access, us_broadband_subscriptions, us_mobile_internet_users];
+   else if (dataSources.internet.groups.usOnly) {
+      lines = [us_internet_access, us_mobile_internet_users, us_broadband_subscriptions,];
       colors = [USA_primary, USA_secondary, USA_tertiary];
       lineNames = ["US Internet Access", "US Broadband Subscriptions", "US Mobile Internet Users"];
    }
-   else if (internetGroups.broadband) {
-      lines = [us_broadband_subscriptions, cn_broadband_subscriptions];
-      colors = [USA_primary, PRC_primary];
-      lineNames = ["US Broadband Subscriptions", "PRC Broadband Subscriptions"];
+   else if (dataSources.internet.groups.broadband) {
+      lines = [cn_broadband_subscriptions, us_broadband_subscriptions];
+      colors = [PRC_primary, USA_primary];
+      lineNames = ["PRC Broadband Subscriptions", "US Broadband Subscriptions"];
    }
-   else if (internetGroups.access) {
+   else if (dataSources.internet.groups.access) {
       lines = [us_internet_access,cn_internet_access];
       colors = [USA_primary, PRC_primary];
       lineNames = ["US Internet Access","PRC Internet Access"];
    }
-   else if (internetGroups.mobile) {
+   else if (dataSources.internet.groups.mobile) {
       lines = [us_mobile_internet_users, cn_mobile_internet_users];
       colors = [USA_primary, PRC_primary];
       lineNames = ["US Mobile Internet Users", "PRC Mobile Internet Users" ];
    }
    console.log(lines, colors, lineNames)
-   drawLines(data, lines, colors, lineNames, true);
-
-
+   drawLines(data, lines, colors, lineNames, animateGraph);
 };
 
 const buildPatentGraph = function (data) {
@@ -640,7 +641,7 @@ const buildPatentGraph = function (data) {
 
    let lines = [us_patent_assignments, cn_patent_assignments];
    let colors = [USA_primary, PRC_primary];
-   let lineNames = ["US", "China"];
+   let lineNames = ["US Patents", "China Patents"];
    drawLines(data, lines, colors, lineNames, animateGraph);
 
    svg.call(hover(100));
@@ -853,21 +854,10 @@ function papersGraph() {
    gatherData("data/science.csv", scienceFileConversion).then(buildPapersGraph);
 }
 
-function internetUseGraph
-   (
-      internetGroups = {
-         chinaOnly: false,
-         usOnly: false,
-         broadband: false,
-         access: false,
-         mobile: false
-      }
-   ) 
-{
-   
+function internetUseGraph() {
    // clear graph
    d3.selectAll("svg>*").remove();
-   gatherData("data/internet.csv", internetFileConversion).then(data => buildInternetUseGraph(data, internetGroups));
+   gatherData("data/internet.csv", internetFileConversion).then(data => buildInternetUseGraph(data, dataSources.internet.groups));
 }
 
 function patentGraph() {
@@ -885,35 +875,38 @@ function roadGraph() {
 var dataSources = {
    citations: {
       selected: true,
-      filename: "science.csv"
+      filename: "science.csv",
+      groups: null,
    },
    papers: {
       selected: false,
-      filename: "science.csv"
+      filename: "science.csv",
+      groups: null,
    },
    roads: {
       selected: false,
-      filename: "roads.csv"
+      filename: "roads.csv",
+      groups: null,
    },
    internet: {
       selected: false,
-      filename: "internet.csv"
+      filename: "internet.csv",
+      groups: {
+         chinaOnly: false,
+         usOnly: false,
+         broadband: false,
+         access: false,
+         mobile: false
+      }
    },
    patent: {
       selected: false,
-      filename: "patent.csv"
+      filename: "patent.csv",
+      groups: null,
    },
 }
 // sets the current data source
-function updateDataSource (
-   internetGroups = {
-      chinaOnly: false,
-      usOnly: false,
-      broadband: false,
-      access: false,
-      mobile: false
-   }
-) { 
+function updateDataSource () { 
    let values = ["citations", "papers", "roads", "internet", "patent"];
    let functions = [citationsGraph, papersGraph, roadGraph, internetUseGraph, patentGraph]
    let current_value = document.getElementById("source_selector").elements["data_source"].value;
@@ -945,6 +938,15 @@ function updateGroupSelector() {
          group_selector.options[group_selector.options.length] = new Option(text[i], values[i]);
       } 
    }
+   // these dataSources have no groups
+   else if ( (dataSources.citations.selected || dataSources.papers.selected || dataSources.patent.selected) && (group_selector.options.length < 1 || group_selector.options[group_selector.options.length-1].text != "Full Data") ) {
+      let text = ["Full Data"]
+      let values = ["full"];
+      for (let i = 0; i < values.length; i++) {
+         group_selector.length = 0;
+         group_selector.options[0] = new Option(text[i], values[i]);
+      } 
+   }
 }
 // updates graph to chosen sub-group from dataSource
 function updateDataFromSubGroup() {
@@ -952,32 +954,30 @@ function updateDataFromSubGroup() {
    let values = ["chinaOnly", "usOnly", "broadband", "access", "mobile", "all"];
    let current_value = document.getElementById("subgroup_selector").elements["group_source"].value;
    if (dataSources.internet.selected) {
-      internetGroups = {
-         chinaOnly: false,
-         usOnly: false,
-         broadband: false,
-         access: false,
-         mobile: false
+      dataSources.internet.groups = {
+         chinaOnly: current_value == values[0] ? true: false,
+         usOnly: current_value == values[1] ? true: false,
+         broadband: current_value == values[2] ? true: false,
+         access: current_value == values[3] ? true: false,
+         mobile: current_value == values[4] ? true: false
       }
-      if (current_value == values[0]) {
-         internetGroups.chinaOnly = true;
-      }
-      else if (current_value == values[1]) {
-         internetGroups.usOnly = true;
-      }      
-      else if (current_value == values[2]) {
-         internetGroups.broadband = true;
-      }
-      else if (current_value == values[3]) {
-         internetGroups.access = true;
-      }
-      else if (current_value == values[4]) {
-         internetGroups.mobile = true;
-      }
-      internetUseGraph(internetGroups)
+      internetUseGraph()
    }
+   // else if (dataSources.)
 }
 
+function updateGraphType() {
+   let current_value = document.getElementById("graphtype_selector").elements["graph_type"].value;
+   let values = ["line", "stack", "histogram"];
+   let funcs = [toggleLineChart, toggleStackChart, toggleHistogramChart]
+   for (let i = 0; i < values.length; i++) {
+      if (values[i] == current_value) {
+         funcs[i]();
+         updateDataFromSubGroup();
+      }
+   }
+
+}
 function downloadDataSource() {
    let permissionGranted = confirm("Press OK to download the csv data file.");
    if (permissionGranted) {
@@ -1030,10 +1030,6 @@ function downloadSvg() {
 function infoModal() {
    // Get the modal
    var modal = document.getElementById("myModal");
-
-   // Get the button that opens the modal
-   var btn = document.getElementsByClassName("fa-circle-question")[0];
-
    // Get the <span> element that closes the modal
    var span = document.getElementsByClassName("close")[0];
 
@@ -1083,41 +1079,30 @@ function multiToggle(id) {
 }
 
 function toggleAnimation() {
-   toggle('animation_toggle');
-   animateGraph = !animateGraph;
-   updateDataSource();
+   animate = document.getElementById("animation_btn")
+   if (animate.className == "downloader fa-solid fa-video fa-2x") {
+      animate.className = "downloader fa-solid fa-video-slash fa-2x";
+      animateGraph = false;
+      updateDataSource();
+   }
+   else {
+      animate.className = "downloader fa-solid fa-video fa-2x";
+      animateGraph = true;
+      updateDataSource();
+   }
+
 }
 
 function toggleStackChart() {
-   id = 'stack_toggle';
-   // Turn off individually, turn on and shut other toggles off
-   if (document.getElementById(id).className == "fa-solid fa-toggle-on") {
-      toggle(id);
-      // svg.selectAll('*').remove();
-      fillOpacity = "0";
-      updateDataSource();
-   }
-   else {
-      multiToggle(id);
-      fillOpacity = "1"
-      updateDataSource();
-     animateGraph = false;
-   }
+   fillOpacity = "1"
+   animateGraph = false;
+   updateDataSource();
 }
 
 function toggleLineChart() {
-   id = 'line_toggle';
-   // Turn off individually, turn on and shut other toggles off
-   if (document.getElementById(id).className == "fa-solid fa-toggle-on") {
-      toggle(id);
-   }
-   else {
-      multiToggle(id);
-      fillOpacity = "0";
-      updateDataSource();
-   }
-   // Change current graph to stack view
-
+   fillOpacity = "0";
+   animateGraph = true;
+   updateDataSource();
 }
 
 function toggleHistogramChart() {
