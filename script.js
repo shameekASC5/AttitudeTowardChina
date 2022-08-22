@@ -1,3 +1,55 @@
+var USA_primary = "#0099C5";
+var USA_secondary = "#CCEAF3";
+var USA_tertiary = "#88D5F3";
+var PRC_primary = "#ff0000";
+var PRC_secondary = "#B0000D";
+var PRC_tertiary = "#CF666D";
+
+var strokeWidth = 3;
+var animationDuration = 5;
+var animateGraph = false; // determines whether lines will animate
+var fillOpacity = "0.0";
+
+// default is citations
+var dataSources = {
+   citations: {
+      selected: true,
+      filename: "science.csv",
+      groups: null,
+   },
+   papers: {
+      selected: false,
+      filename: "science.csv",
+      groups: null,
+   },
+   roads: {
+      selected: false,
+      filename: "roads.csv",
+      groups: {
+         chinaOnly: false,
+         usOnly: false,
+         highways: false,
+         expressways: false
+      },
+   },
+   internet: {
+      selected: false,
+      filename: "internet.csv",
+      groups: {
+         chinaOnly: false,
+         usOnly: false,
+         broadband: false,
+         access: false,
+         mobile: false
+      }
+   },
+   patent: {
+      selected: false,
+      filename: "patent.csv",
+      groups: null,
+   },
+}
+
 var svg = d3.select("div#svg-container")
    .append("svg")
    .attr("preserveAspectRatio", "xMinYMin meet")
@@ -14,18 +66,6 @@ d3.select("svg"),
 // set graph scale
 var x = d3.scaleTime().range([margin.left, width - margin.right])
 var y = d3.scaleLinear().rangeRound([height-margin.bottom, margin.top]);
-
-var USA_primary = "#0099C5";
-var USA_secondary = "#CCEAF3";
-var USA_tertiary = "#88D5F3";
-var PRC_primary = "#ff0000";
-var PRC_secondary = "#B0000D";
-var PRC_tertiary = "#CF666D";
-
-var strokeWidth = 3;
-var animationDuration = 5;
-var animateGraph = false; // determines whether lines will animate
-var fillOpacity = "0.0";
 
 // animates the drawing of line
 function animateSolidLine(path) {
@@ -508,8 +548,6 @@ const buildPapersGraph = function (data) {
    }
 };
 
-// Will generate graph from internet use data based on line groups as 
-// defined by parameter names
 const buildInternetUseGraph = function (data) {
    generateAll = !dataSources.internet.groups.chinaOnly && !dataSources.internet.groups.usOnly && !dataSources.internet.groups.broadband && !dataSources.internet.groups.access && !dataSources.internet.groups.mobile;
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -562,7 +600,7 @@ const buildInternetUseGraph = function (data) {
    var lines = []
    var colors = []
    var lineNames = []
-
+   var animate = animateGraph;
    if (generateAll) {
       lines = [ 
          cn_internet_access, cn_mobile_internet_users,
@@ -578,34 +616,140 @@ const buildInternetUseGraph = function (data) {
       "US Internet Access", "US Mobile Internet Users",
       "PRC Broadband Subscriptions", "US Broadband Subscriptions",  
       ];
+      animate = true;
+      drawLines(data, lines, colors, lineNames, animate);
    }
    else if (dataSources.internet.groups.chinaOnly) {
       lines = [cn_internet_access, cn_broadband_subscriptions, cn_mobile_internet_users];
       colors = [PRC_primary, PRC_secondary, PRC_tertiary];
       lineNames = ["PRC Internet Access", "PRC Broadband Subscriptions", "PRC Mobile Internet Users" ];
+      drawLines(data, lines, colors, lineNames, animate);
    }
    else if (dataSources.internet.groups.usOnly) {
       lines = [us_internet_access, us_mobile_internet_users, us_broadband_subscriptions,];
       colors = [USA_primary, USA_secondary, USA_tertiary];
       lineNames = ["US Internet Access", "US Broadband Subscriptions", "US Mobile Internet Users"];
+      drawLines(data, lines, colors, lineNames, animate);
    }
    else if (dataSources.internet.groups.broadband) {
       lines = [cn_broadband_subscriptions, us_broadband_subscriptions];
       colors = [PRC_primary, USA_primary];
       lineNames = ["PRC Broadband Subscriptions", "US Broadband Subscriptions"];
+      drawLines(data, lines, colors, lineNames, animate);
+      svg.call(hover("cn_broadband_subscriptions", "us_broadband_subscriptions"))
    }
    else if (dataSources.internet.groups.access) {
       lines = [us_internet_access,cn_internet_access];
       colors = [USA_primary, PRC_primary];
       lineNames = ["US Internet Access","PRC Internet Access"];
+      drawLines(data, lines, colors, lineNames, animate);
+      svg.call(hover("us_internet_access", "cn_internet_access"))
    }
    else if (dataSources.internet.groups.mobile) {
       lines = [us_mobile_internet_users, cn_mobile_internet_users];
       colors = [USA_primary, PRC_primary];
       lineNames = ["US Mobile Internet Users", "PRC Mobile Internet Users" ];
+      drawLines(data, lines, colors, lineNames, animate);
+      svg.call(hover("us_mobile_internet_users", "cn_mobile_internet_users"))
    }
-   console.log(lines, colors, lineNames)
-   drawLines(data, lines, colors, lineNames, animateGraph);
+   function hover(data1, data2) {
+
+		var bisect = d3.bisector(d => d.year).left,
+			format = d3.format("+.0%"),
+			dateFormat = d3.timeFormat("%Y")
+
+		var focus = svg.append("g")
+			.attr("class", "focus")
+			.style("display", "none")
+         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		focus.append("line")
+			.attr("stroke", "#666")
+			.attr("stroke-width", 1)
+			.attr("y1", -height + margin.top)
+			.attr("y2", -margin.bottom);
+
+		focus.append("circle")
+			.attr("class", "circle1")
+			.attr("r", 5)
+			.attr("dy", 5)
+			.attr("stroke", "steelblue")
+			.attr("fill", "#fff");
+      
+      focus.append("circle")
+			.attr("class", "circle2")
+			.attr("r", 5)
+			.attr("dy", 5)
+			.attr("stroke", "steelblue")
+			.attr("fill", "#fff");      
+
+		focus.append("text")
+         .attr("class", "year_display")
+			.attr("text-anchor", "middle")
+			.attr("dy", ".35em");
+
+      focus.append("text")
+         .attr("class", "usa")
+         .attr("x", 15)
+         .attr("y", 30)
+
+      focus.append("text")
+         .attr("class", "prc")
+         .attr("x", -30)
+         .attr("y", 30)
+
+		var overlay = svg.append("rect")
+         .attr("fill", "none")
+			.attr("class", "overlay")
+			.attr("x", margin.left)
+			.attr("y", margin.top)
+			.attr("width", width - margin.right )
+			.attr("height", height - margin.bottom )
+			.on("mouseover", () => focus.style("display", null))
+			.on("mouseout", () => focus.style("display", "none"))
+			.on("mousemove", mousemove);
+	
+		function mousemove() {
+
+			var x0 = x.invert(d3.mouse(this)[0]);
+
+			var i = bisect(data, x0, 1),
+				d0 = data[i - 1],
+				d1 = data[i],
+				d = x0 - d0.year > d1.year - x0 ? d1 : d0;
+
+			focus.select("line")
+				.attr("transform", 
+					"translate(" + x(d.year) + "," + height + ")");
+
+			focus.selectAll(".circle1")
+            .attr("r", "5")
+            .attr("stroke", "black")
+				.attr("transform", 
+					"translate(" + x(d.year) + "," + y(d[data1]) + ")");
+         
+         focus.selectAll(".circle2")
+            .attr("stroke", "black")
+            .attr("transform", 
+               "translate(" + x(d.year) + "," + y(d[data2]) + ")");
+
+			focus.selectAll(".year_display")
+				.attr("transform", 
+					"translate(" + x(d.year) + "," + (height + 0.75*margin.bottom) + ")")
+				.text(dateFormat(d.year));
+         
+         focus.selectAll(".usa")
+            .attr("transform", 
+            "translate(" + x(d.year) + "," + y(d[data1]) + ")")
+            .text(d[data1].toLocaleString())
+         
+         focus.selectAll(".prc")
+            .text(d[data2].toLocaleString())
+            .attr("transform", 
+               "translate(" + x(d.year) + "," + y(d[data2]) + ")");
+
+		}
+   }
 };
 
 const buildPatentGraph = function (data) {
@@ -744,6 +888,8 @@ const buildPatentGraph = function (data) {
 };
 
 const buildRoadGraph = function (data) {
+   generateAll = !dataSources.roads.groups.chinaOnly && !dataSources.roads.groups.usOnly && !dataSources.roads.groups.highways && !dataSources.roads.groups.expressways;
+
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
    
    // Line(s) declaration
@@ -782,10 +928,147 @@ const buildRoadGraph = function (data) {
        .attr("text-anchor", "end")
        .text("Highway Length (in 10,000 kilometers)"); 
 
-   let lines = [us_public_roads, cn_highway, us_expressway, cn_expressway];
-   let colors = [USA_primary, PRC_primary, USA_secondary, PRC_secondary];
-   let lineNames = ["US public road and street", "PRC Highways", "US interstate and other freeway/expressways", "PRC Highways"];
-   drawLines(data, lines, colors, lineNames, true, 100);
+   
+   var lines = []
+   var colors = []
+   var lineNames = []
+   var animate = animateGraph;
+
+   if (generateAll) {
+      lines = [us_public_roads, cn_highway, us_expressway, cn_expressway];
+      colors = [USA_primary, PRC_primary, USA_secondary, PRC_secondary];
+      lineNames = ["US public road and street", "PRC Highways", "US interstate and other freeway/expressways", "PRC Expressways"]
+      animate = true;
+      drawLines(data, lines, colors, lineNames, animate, 100);
+   }
+   else if (dataSources.roads.groups.chinaOnly) {
+      lines = [cn_highway, cn_expressway];
+      colors = [PRC_primary, PRC_secondary];
+      lineNames = [ "PRC Highways", "PRC Expressways"];
+      drawLines(data, lines, colors, lineNames, animate, 100);
+      svg.call(hover("China: Highway Length (by 10,000 kilometers)", "China: Length of Expressways (by 10,000 kilometers)"))
+
+   }
+   else if (dataSources.roads.groups.usOnly) {
+      lines = [us_public_roads, us_expressway];
+      colors = [USA_primary, USA_secondary];
+      lineNames = ["US public road and street", "US interstate and other freeway/expressways"];
+      drawLines(data, lines, colors, lineNames, animate, 100);
+      svg.call(hover("US: Public  Road  and  Street  Length in US (by 10,000 kilometers)","US: Length of Interstate and Other Freeways and Expressways (by 10,000 kilometers)"))
+   }
+   else if (dataSources.roads.groups.highways) {
+      lines = [cn_highway, us_public_roads];
+      colors = [PRC_primary, USA_primary];
+      lineNames = ["PRC Highways", "US public road and street",];
+      drawLines(data, lines, colors, lineNames, animate, 100);
+      svg.call(hover("China: Highway Length (by 10,000 kilometers)", "US: Public  Road  and  Street  Length in US (by 10,000 kilometers)"))
+   }
+   else if (dataSources.roads.groups.expressways) {
+      lines = [cn_expressway,us_expressway];
+      colors = [PRC_primary, USA_primary, ];
+      lineNames = ["PRC Expressways", "US interstate and other freeway/expressways"];
+      drawLines(data, lines, colors, lineNames, animate, 100);
+      svg.call(hover("US: Length of Interstate and Other Freeways and Expressways (by 10,000 kilometers)","China: Length of Expressways (by 10,000 kilometers)"))
+   }
+   
+	function hover(data1, data2) {
+
+		var bisect = d3.bisector(d => d.year).left,
+			format = d3.format("+.0%"),
+			dateFormat = d3.timeFormat("%Y")
+
+		var focus = svg.append("g")
+			.attr("class", "focus")
+			.style("display", "none")
+         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		focus.append("line")
+			.attr("stroke", "#666")
+			.attr("stroke-width", 1)
+			.attr("y1", -height + margin.top)
+			.attr("y2", -margin.bottom);
+
+		focus.append("circle")
+			.attr("class", "circle1")
+			.attr("r", 5)
+			.attr("dy", 5)
+			.attr("stroke", "steelblue")
+			.attr("fill", "#fff");
+      
+      focus.append("circle")
+			.attr("class", "circle2")
+			.attr("r", 5)
+			.attr("dy", 5)
+			.attr("stroke", "steelblue")
+			.attr("fill", "#fff");      
+
+		focus.append("text")
+         .attr("class", "year_display")
+			.attr("text-anchor", "middle")
+			.attr("dy", ".35em");
+
+      focus.append("text")
+         .attr("class", "usa")
+         .attr("x", 15)
+         .attr("y", 30)
+
+      focus.append("text")
+         .attr("class", "prc")
+         .attr("x", -30)
+         .attr("y", 30)
+
+		var overlay = svg.append("rect")
+         .attr("fill", "none")
+			.attr("class", "overlay")
+			.attr("x", margin.left)
+			.attr("y", margin.top)
+			.attr("width", width - margin.right )
+			.attr("height", height - margin.bottom )
+			.on("mouseover", () => focus.style("display", null))
+			.on("mouseout", () => focus.style("display", "none"))
+			.on("mousemove", mousemove);
+	
+		function mousemove() {
+
+			var x0 = x.invert(d3.mouse(this)[0]);
+
+			var i = bisect(data, x0, 1),
+				d0 = data[i - 1],
+				d1 = data[i],
+				d = x0 - d0.year > d1.year - x0 ? d1 : d0;
+
+			focus.select("line")
+				.attr("transform", 
+					"translate(" + x(d.year) + "," + height + ")");
+
+			focus.selectAll(".circle1")
+            .attr("r", "5")
+            .attr("stroke", "black")
+				.attr("transform", 
+					"translate(" + x(d.year) + "," + y(d[data1]) + ")");
+         
+         focus.selectAll(".circle2")
+            .attr("stroke", "black")
+            .attr("transform", 
+               "translate(" + x(d.year) + "," + y(d[data2]) + ")");
+
+			focus.selectAll(".year_display")
+				.attr("transform", 
+					"translate(" + x(d.year) + "," + (height + 0.75*margin.bottom) + ")")
+				.text(dateFormat(d.year));
+         
+         focus.selectAll(".usa")
+            .attr("transform", 
+            "translate(" + x(d.year) + "," + y(d[data1]) + ")")
+            .text(d[data1].toLocaleString())
+         
+         focus.selectAll(".prc")
+            .text(d[data2].toLocaleString())
+            .attr("transform", 
+               "translate(" + x(d.year) + "," + y(d[data2]) + ")");
+
+		}
+   }
 };
 
 // handle d3.csv file retrevial 
@@ -871,41 +1154,8 @@ function roadGraph() {
    d3.selectAll("svg>*").remove();
    gatherData("data/roads.csv", roadFileConversion).then(buildRoadGraph);
 }
-// default is citations
-var dataSources = {
-   citations: {
-      selected: true,
-      filename: "science.csv",
-      groups: null,
-   },
-   papers: {
-      selected: false,
-      filename: "science.csv",
-      groups: null,
-   },
-   roads: {
-      selected: false,
-      filename: "roads.csv",
-      groups: null,
-   },
-   internet: {
-      selected: false,
-      filename: "internet.csv",
-      groups: {
-         chinaOnly: false,
-         usOnly: false,
-         broadband: false,
-         access: false,
-         mobile: false
-      }
-   },
-   patent: {
-      selected: false,
-      filename: "patent.csv",
-      groups: null,
-   },
-}
-// sets the current data source
+
+// sets selected key to true for current data source and false for all others
 function updateDataSource () { 
    let values = ["citations", "papers", "roads", "internet", "patent"];
    let functions = [citationsGraph, papersGraph, roadGraph, internetUseGraph, patentGraph]
@@ -931,9 +1181,18 @@ function updateGroupSelector() {
    console.log("updating group selec")
    group_selector = document.getElementById("group_source");
    // check that the values haven't already been updated
-   if (dataSources.internet.selected && (group_selector.options.length < 1 || group_selector.options[group_selector.options.length-1].text != "Mobile") ) {
-      let text = ["China (domestic)", "United States (domestic)", "Broadband", "Access", "Mobile"]
-      let values = ["chinaOnly", "usOnly", "broadband", "access", "mobile"];
+   if (dataSources.internet.selected) {
+      let text = ["Full Data", "China (domestic)", "United States (domestic)", "Broadband", "Access", "Mobile"]
+      let values = ["full", "chinaOnly", "usOnly", "broadband", "access", "mobile"];
+      group_selector.length = 0;
+      for (let i = 0; i < values.length; i++) {
+         group_selector.options[group_selector.options.length] = new Option(text[i], values[i]);
+      } 
+   }
+   else if (dataSources.roads.selected) {
+      let text = ["Full Data", "China (domestic)", "United States (domestic)", "Highways", "Expressways"]
+      let values = ["full", "chinaOnly", "usOnly", "highways", "expressways"];
+      group_selector.length = 0;
       for (let i = 0; i < values.length; i++) {
          group_selector.options[group_selector.options.length] = new Option(text[i], values[i]);
       } 
@@ -947,22 +1206,53 @@ function updateGroupSelector() {
          group_selector.options[0] = new Option(text[i], values[i]);
       } 
    }
+   updateDataFromSubGroup();
 }
 // updates graph to chosen sub-group from dataSource
 function updateDataFromSubGroup() {
-   console.log("woohoo")
-   let values = ["chinaOnly", "usOnly", "broadband", "access", "mobile", "all"];
+   
    let current_value = document.getElementById("subgroup_selector").elements["group_source"].value;
    if (dataSources.internet.selected) {
-      dataSources.internet.groups = {
-         chinaOnly: current_value == values[0] ? true: false,
-         usOnly: current_value == values[1] ? true: false,
-         broadband: current_value == values[2] ? true: false,
-         access: current_value == values[3] ? true: false,
-         mobile: current_value == values[4] ? true: false
+      let values = ["full", "chinaOnly", "usOnly", "broadband", "access", "mobile"];
+      if (current_value == values[0]) {
+         obj = dataSources.internet.groups;
+         Object.keys(obj).forEach(key => {
+            obj[key] = false;
+          });
+      }
+      else {
+         dataSources.internet.groups = {
+            chinaOnly: current_value == values[1] ? true: false,
+            usOnly: current_value == values[2] ? true: false,
+            broadband: current_value == values[3] ? true: false,
+            access: current_value == values[4] ? true: false,
+            mobile: current_value == values[5] ? true: false
+         }
       }
       internetUseGraph()
    }
+   else if (dataSources.roads.selected) {
+      let values = ["full", "chinaOnly", "usOnly", "highways", "expressways"];
+      if (current_value == values[0]) {
+         obj = dataSources.roads.groups;
+         Object.keys(obj).forEach(key => {
+            obj[key] = false;
+          });
+      }
+      dataSources.roads.groups = {
+         chinaOnly: current_value == values[1] ? true: false,
+         usOnly: current_value == values[2] ? true: false,
+         highways: current_value == values[3] ? true: false,
+         expressways: current_value == values[4] ? true: false,
+      }
+      roadGraph()
+   }
+   else if(dataSources.citations.selected)
+      citationsGraph()
+   else if(dataSources.papers.selected)
+      papersGraph()
+   else if(dataSources.patent.selected)
+      patentGraph()
    // else if (dataSources.)
 }
 
@@ -978,6 +1268,7 @@ function updateGraphType() {
    }
 
 }
+
 function downloadDataSource() {
    let permissionGranted = confirm("Press OK to download the csv data file.");
    if (permissionGranted) {
@@ -1049,46 +1340,21 @@ function infoModal() {
    }
 }
 
-function toggle(id) {
-   if (document.getElementById(id).className == "fa-solid fa-toggle-on")
-      document.getElementById(id).className = ("fa-solid fa-toggle-off");
-   else
-      document.getElementById(id).className = "fa-solid fa-toggle-on";
-}
-
-function multiToggle(id) {
-   relevant_toggle_ids = ['stack_toggle', 'line_toggle', 'histogram_toggle']
-   // Flip toggle on and turn other graph toggles off
-   if (id == relevant_toggle_ids[0]) {
-      document.getElementById(id).className = ("fa-solid fa-toggle-on");
-      document.getElementById(relevant_toggle_ids[1]).className = ("fa-solid fa-toggle-off");
-      document.getElementById(relevant_toggle_ids[2]).className = ("fa-solid fa-toggle-off");
-   }
-   else if (id == relevant_toggle_ids[1]) {
-      document.getElementById(id).className = ("fa-solid fa-toggle-on");
-      document.getElementById(relevant_toggle_ids[0]).className = ("fa-solid fa-toggle-off");
-      document.getElementById(relevant_toggle_ids[2]).className = ("fa-solid fa-toggle-off");
-   }
-   else if (id == relevant_toggle_ids[2])
-   {
-      document.getElementById(id).className = ("fa-solid fa-toggle-on");
-      document.getElementById(relevant_toggle_ids[0]).className = ("fa-solid fa-toggle-off");
-      document.getElementById(relevant_toggle_ids[1]).className = ("fa-solid fa-toggle-off");
-   }
-
-}
-
 function toggleAnimation() {
    animate = document.getElementById("animation_btn")
-   if (animate.className == "downloader fa-solid fa-video fa-2x") {
-      animate.className = "downloader fa-solid fa-video-slash fa-2x";
+   text = document.getElementById("animate_text");
+   if (animate.className == "fa-solid fa-video fa-3x") {
+      animate.className = "fa-solid fa-video-slash fa-3x";
+      text.textContent = "No Animation"
       animateGraph = false;
-      updateDataSource();
+      updateDataFromSubGroup();
    }
    else {
-      animate.className = "downloader fa-solid fa-video fa-2x";
+      animate.className = "fa-solid fa-video fa-3x";
+      text.textContent = "Animate!"
+
       animateGraph = true;
-      updateDataSource();
+      updateDataFromSubGroup();
    }
 
 }
@@ -1096,13 +1362,13 @@ function toggleAnimation() {
 function toggleStackChart() {
    fillOpacity = "1"
    animateGraph = false;
-   updateDataSource();
+   // updateDataSource();
 }
 
 function toggleLineChart() {
    fillOpacity = "0";
    animateGraph = true;
-   updateDataSource();
+   // updateDataSource();
 }
 
 function toggleHistogramChart() {

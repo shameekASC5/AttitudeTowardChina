@@ -20,6 +20,7 @@ body {
   color: #555;
   /* background-color: #f4f0f2; */
   /* background-color: white; */
+  width: 100%;
 }
 
 main {
@@ -28,6 +29,8 @@ main {
   margin: 0 auto;
   height: 100%;
   /* background: #fff; */
+  /* padding: 2vw; */
+  margin-bottom: 5vh;
 }
 
 section {
@@ -52,6 +55,7 @@ section h2 {
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
+  align-content: center;
 }
 
 
@@ -61,7 +65,7 @@ section h2 {
   font-weight: 300;
   font-size: 5vw;
   text-align: center;
-  margin-bottom: 1.5vw;
+  margin: 1.1vw 0;
 }
 
 #content2 p {
@@ -72,11 +76,12 @@ section h2 {
 
 footer {
   /* background-color: #eee; */
-  background-color: white;
+  /* background-color: white; */
   color: #f58025;
   padding: 20px;
-  /* position: fixed; */
-  height: 50px;
+  /* position: absolute; */
+  font-size: xx-large;
+  height: 70px;
   width: 100%;
   flex-shrink: 0;
   text-align: center;
@@ -123,16 +128,7 @@ footer {
   fill: none;
   pointer-events: all;
 }
-/* -------------------- */
 
-/* *, *:before, *:after {
-   margin: 0;
-   padding: 0;
-   box-sizing: border-box;
-} */
- 
- 
-/* Tab bar  */
 
 #info {
   float: right;
@@ -158,10 +154,11 @@ footer {
 .modal-content {
   background-color: #fefefe;
   text-align: left;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 10% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
+  font-size: x-large;
 }
 
 /* The Close Button */
@@ -188,24 +185,18 @@ footer {
    margin-bottom: 2%;
 }
 
-#source_selector label, select {
-  padding: 0.5em;
-  font-size: 1vw;
-}
-
-
 #subgroup_selector {
   display: flex;
   flex-direction: row;
-   justify-content: center;
-   align-items: center;
+   justify-content: left;
+   align-items: left;
    align-content: left;
    margin-bottom: 2%;
 }
 
-#subgroup_selector label, select {
+form label, select {
   padding: 0.5em;
-  font-size: 1vw;
+  font-size: 0.85vw;
 }
 
 #graphtype_selector {
@@ -215,11 +206,6 @@ footer {
    align-items: center;
    align-content: left;
    margin-bottom: 2%;
-}
-
-#graphtype_selector label, select {
-  padding: 0.5em;
-  font-size: 1vw;
 }
 
 #buttons a  {
@@ -236,22 +222,40 @@ footer {
   color: #e77500;
 }
 
-#data_source {
-  width: 50%;
+.downloader {
+  text-align: center;
+  font-size: larger;
+}
+
+#data_source{
+  width: 100%;
+}
+
+#source_selector {
+  flex-grow:3;
 }
 
 #group_source {
-  width: 50%;
+  width: 100%;
 }
 
-#graph_type {
-  width: 50%;
+#subgroup_selector {
+  flex-grow: 2;
+}
+
+#graph_type{
+  width: 100%;
+}
+
+#graphtype_selector {
+  /* width: 30%; */
+  flex-grow: 2;
 }
 
 #settings_container {
   display: flex;
   flex-flow: row;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
   margin-top: 2em;
 }
@@ -259,9 +263,20 @@ footer {
 #filters {
   display: flex;
   flex-flow: column;
+  justify-content: left;
+  align-items: left;
+  align-content: center;
+  width: 100%;
 }
 
-
+#choose_data {
+  display: flex;
+  flex-flow: row;
+  justify-content: left;
+  align-items: left;
+  align-content: left;
+  margin-top: 1vw;
+}
 
 .tabs {
   display: none;
@@ -321,48 +336,6 @@ input:checked + label {
   border-bottom: 1px solid #fff; */
   /* border-radius: 1em 1em 0px 0px; */
 }
-/* ------------------------- */
-
-/* About Us card design */
-#people {
-   display: flex;
-   justify-content: space-evenly;
-   flex-wrap: wrap; 
-}
-
-.center_affiliate {
-  background-color: #fff;
-  flex-direction: column;
-  justify-content: center;
-  /* border: 1px solid black; */
-  /* border-radius: 20px; */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  display: flex;
-  width: 20%;
-  /* height: 100%; */
-  padding: 1em;
-  margin: 1em;
-  /* flex-grow: 1; */
-  transition-duration: 500ms;
-  transition-timing-function: ease-in-out;
-}
-
-.center_affiliate a {
-  color: #e77500;
-  text-align: center;
-  text-decoration: none;
-}
-
-.center_affiliate:hover {
-  box-shadow: 0 12px 24px 0 rgba(0,0,0,0.2);
-  text-decoration: underline;
-}
-
-.center_affiliate img {
-  margin: 0.5em 0;
-  width: 95%;
-}
-/* ------------------------- */
 
 /* Media Queries */
 

@@ -10,35 +10,17 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="text/javascript" src="script.js" defer></script>
   </head>
-  <!-- onload="citationsGraph()" -->
   <body onload="citationsGraph()">
-   <div id="header">
-      <img style = "height: 7em; width: 27em" src="assets/ccc_logo.png">
-      <img style = "height: 6em; width: 20%;" src="assets/PU-standard.svg">
-   </div>
-   <bold>
-   </bold>
-   <p id="title">China Impact Project</p>
-
-   <main>
-      
-      <!-- <input id="tab1" type="radio" class = "tabs" name="tabs" checked>
-      <label for="tab1">Data Visualization</label>
-         -->
-      <!-- <input id="tab2" type="radio" class = "tabs" name="tabs">
-      <label for="tab2" style="margin-left: -10px">About Us</label>
-      
-      <input id="tab3" type="radio" class = "tabs" name="tabs">
-      <label for="tab3" style="margin-left: -10px">Newsletter</label>
-        
-      <input id="tab4" type="radio" class = "tabs" name="tabs">
-      <label for="tab4" style="margin-left: -10px">FAQ</label>
-            -->
+      <div id="header">
+         <img style = "height: 7em; width: 27em" src="assets/ccc_logo.png">
+         <img style = "height: 6em; width: 20%;" src="assets/PU-standard.svg">
+      </div>
+      <p id="title">China Impact Project</p>
+      <main>      
          <div id="info">
-            <i onclick="infoModal()" class="fa-solid fa-circle-question fa-xl"></i>
+            <i onclick="infoModal()" class="fa-solid fa-circle-question fa-2x"></i>
             <!-- The Modal -->
             <div id="myModal" class="modal">
-
                <!-- Modal content -->
                <div class="modal-content">
                   <span class="close">&times;</span>
@@ -66,212 +48,73 @@
                      This button allows you to download the generated graphs in SVG format.
                   </p>
                </div>
-            
             </div>
          </div>
-         
+
          <div id="filters">
-            <form id= "source_selector" onsubmit="false" target="_top">
-            <label for="data_source" style="background-color: white;">Data Source:</label>
-            <select name="data_source" id="data_source" onchange="updateDataSource()">
-               <option value="citations">Academia: Citations</option>
-               <option value="papers">Academia: Paper Publishing</option>
-               <option value="roads">Infrastructure: Street/Road </option>
-               <option value="internet">Technology: Internet Usage </option>
-               <option value="patent">Technology: Patent Data</option>
-               </select>
-               <!-- <a id="source_downloader">
-                  <i onclick="downloadDataSource()" class="fa-solid fa-file-arrow-down fa-xl"></i>
-               </a> -->
-            </form>
-            <form id="subgroup_selector" onsubmit="false" target="_top">
-               <label for="group_source" style="background-color: white;">Subcategory:</label>
-               <select name="group_source" id="group_source" onchange="updateDataFromSubGroup()">
-                  <option value="">Full Data</option>
-                  </select>
-                  <!-- <a>
-                     <i class="fa-solid fa-chart-line fa-xl"></i>
-                  </a> -->
-            </form>
-            <form id="graphtype_selector" onsubmit="false" target="_top">
-               <label for="graph_type" style="background-color: white;">Graphic Type:</label>
-               <select name="graph_type" id="graph_type" onchange="updateGraphType()">
-                  <option value="line">Line Chart</option>
-                  <option value="stack">Stack Chart</option>
-                  <option value="histogram">Histogram Chart</option>
-                  </select>
-                  <!-- <a>
-                     <i onclick="toggleAnimation()" id="animation_bt" class="downloader fa-solid fa-video-slash fa-xl"></i>
-                  </a> -->
+            <div id="choose_data">
+               <form id= "source_selector" onsubmit="false" target="_top">
+                  <label for="data_source" style="background-color: white;">Data:</label>
+                  <select name="data_source" id="data_source" onchange="updateDataSource()">
+                     <option value="citations">Academia: Citations</option>
+                     <option value="papers">Academia: Paper Publishing</option>
+                     <option value="roads">Infrastructure: Street/Road </option>
+                     <option value="internet">Technology: Internet Usage </option>
+                     <option value="patent">Technology: Patent Data</option>
+                     </select>
+                     <!-- <a id="source_downloader">
+                        <i onclick="downloadDataSource()" class="fa-solid fa-file-arrow-down fa-xl"></i>
+                     </a> -->
+                  </form>
+                  <form id="graphtype_selector" onsubmit="false" target="_top">
+                     <label for="graph_type" style="background-color: white;">Graph:</label>
+                     <select name="graph_type" id="graph_type" onchange="updateGraphType()">
+                        <option value="line">Line Chart</option>
+                        <option value="stack">Stack Chart</option>
+                        <!-- <option value="histogram">Histogram Chart</option> -->
+                        </select>
+                        <!-- <a>
+                           <i onclick="toggleAnimation()" id="animation_bt" class="downloader fa-solid fa-video-slash fa-xl"></i>
+                        </a> -->
 
-            </form>
-
-            <!-- <div id ="settings_container">
-               <div id="animate">
-                  <span>Animate</span>
-                  <i id="animation_toggle" class="fa-solid fa-toggle-on" onclick="toggleAnimation()"></i> 
-               </div>
-
-               <div id="stack-chart">
-                  <span>Stack Chart</span>
-                  <i id="stack_toggle" class="fa-solid fa-toggle-off" onclick="toggleStackChart()"></i> 
-               </div>
-
-               <div id="line-chart">
-                  <span>Line Chart</span>
-                  <i id="line_toggle" class="fa-solid fa-toggle-on" onclick="toggleLineChart()"></i> 
-               </div>
-
-               <div id="histogram-chart">
-                  <span>Histogram</span>
-                  <i id="histogram_toggle" class="fa-solid fa-toggle-off" onclick="toggleHistogramChart()"></i> 
-               </div>
-         
-            </div> -->
+                  </form>
+            
+               <form id="subgroup_selector" onsubmit="false" target="_top">
+                  <label for="group_source" style="background-color: white;">Subgroup:</label>
+                  <select name="group_source" id="group_source" onchange="updateDataFromSubGroup()">
+                     <option value="">Full Data</option>
+                     </select>
+                     <!-- <a>
+                        <i class="fa-solid fa-chart-line fa-xl"></i>
+                     </a> -->
+               </form>
+            </div>
          </div>
-         <!-- <span style="padding-right: 0.5em">Download SVG</span>
-         <i onclick="downloadSvg()" id="graph_downloader" class="fa-solid fa-download"></i> -->
+
          <div id ="svg-container">
          </div>
          <div id="buttons">
-            <a id="source_downloader">
-               <i onclick="downloadDataSource()" class="downloader fa-solid fa-file-arrow-down fa-2x"></i>
+            <a id="source_downloader" class="downloader">
+               <i onclick="downloadDataSource()" class="fa-solid fa-file-arrow-down fa-3x"></i>
                <span>CSV data</span>
+               
             </a>
-            <a>
-               <i onclick="toggleAnimation()" id="animation_btn" class="downloader fa-solid fa-video-slash fa-2x"></i>
-               <span>Animation</span>
+            <a class="downloader">
+               <i onclick="toggleAnimation()" id="animation_btn" class="fa-solid fa-video-slash fa-3x"></i>
+               <span id="animate_text">No Animation</span>
             </a>
-            <a>
-               <i onclick="downloadSvg()" id="graph_downloader" class="downloader fa-solid fa-chart-line fa-2x"></i>
+            <a class="downloader">
+               <i onclick="downloadSvg()" id="graph_downloader" class="fa-solid fa-chart-line fa-3x"></i>
                <span>SVG graph</span>
             </a>
          </div>
-
-      
-
-      <!-- <section id="content2">
-         <h2>About the Project</h2>
-         <p>
-            We are social scientists who believe in the importance of understanding social reality for public policy and public discourse. After achieving rapid economic growth since the Economic Reform that began in 1978, China now impacts the rest of the world in significant ways, in almost all domains and walks of life. Yet, little is known about people’s attitudes towards China. Most policy discussions about China’s international relationships have focused mainly on the attitudes of political and business elites in other countries. It is time to correct the imbalance.
-         </p>
-         <p>
-            We are dedicated to measuring, documenting, understanding, and disseminating information about ordinary people’s attitudes towards China. While we are keenly aware that public opinion is inherently fluid, subject to being influenced by politicians, media, and even research methodology, public opinion is real and has real social consequences. Those who ignore it do so at their own peril.
-         </p>
-         <p>
-            We have collected all the relevant data that we could obtain from many sources for our purpose. On this website, we present this data in formats that make it easy to understand.
-         </p>
-         <p>
-            As researchers, we believe in scientific objectivity and wish to present data impartially. Not only are we not political, we are not even interested in policy implications. Consumers of our website can draw their own political and policy inferences. We are only data providers, or modern-day messengers. No more, no less.
-         </p>
-
-         <div id="people"> 
-            <div class = "center_affiliate">
-               <center>
-                  <a target="_blank" href="https://ccc.princeton.edu/people/yu-xie">
-                     <h2>Yu Xie</h2>
-                     <img alt="Yu Xie" src="assets/xie.jpeg">
-                     <p style = "font-size: x-small">
-                        Bert G. Kerstetter '66 University Professor of Sociology and the Princeton Institute for International and Regional Studies Princeton University
-                     </p>
-                  </a>
-               </center>
-            </div>
-
-            <div class = "center_affiliate">
-               <center>
-                  <a target="_blank" href="https://soc.iastate.edu/directory/dr-shawn-dorius/">
-                     <h2>Shawn F Dorius</h2>
-                     <img alt="Shawn F Dorius" src="assets/shawn.jpeg">
-                     <p>
-                        Associate Professor of Sociology <br> Iowa State University
-                     </p>
-                  </a>
-               </center>
-            </div>
-
-            <div class = "center_affiliate">
-               <center>
-                  <a target="_blank" href="https://ccc.princeton.edu/people/donghui-wang">
-                     <h2>Donghui Wang</h2>
-                     <img alt="Donghui Wang" src="assets/donghui.jpeg">
-                     <p>
-                        Postdoctoral Research Associate <br>Princeton University 
-                     </p>
-                  </a>
-               </center>
-            </div>
-
-            <div class = "center_affiliate">
-               <center>
-                  <a target="_blank" href="https://ccc.princeton.edu/people/yongai-jin">
-                     <h2>Yongai Jin</h2>
-                     <img alt="Yongai Jin" src="assets/yongai.jpeg">
-                     <p>
-                        Global Scholar <br> Renmin University
-                     </p>
-                  </a>
-               </center>
-            </div>
-
-            <div class = "center_affiliate">
-               <center>
-                  <a target="_blank" href="https://ccc.princeton.edu/people/junming-huang">
-                     <h2>Junming Huang</h2>
-                     <img alt="Junming Huang" src="assets/junming.jpeg">
-                     <p>
-                        Associate Research Scholar <br> Princeton University
-                     </p>
-                  </a>
-               </center>
-            </div>
-
-            <div class = "center_affiliate">
-               <center>
-                  <a target="_blank" href="https://ccc.princeton.edu/people/ziye-zhang">
-                     <h2>Ziye Zhang</h2>
-                     <img alt="Ziye Zhang" src="assets/ziye.jpeg">
-                     <p>
-                        Postdoctoral Research Associate<br> <br>
-                     </p>
-                  </a>
-               </center>
-            </div>
-
-            <div class = "center_affiliate">
-               <center>
-                  <a target="_blank" href="https://ccc.princeton.edu/lemeng-liang">
-                     <h2>Lemeng Liang</h2>
-                     <img alt="Lemeng Liang" src="assets/lemeng.jpeg">
-                     <p>
-                        Journalism and Communication <br> '20 Tsinghua University 
-                     </p>
-                  </a>
-               </center>
-            </div>
-         </div>
-         
-      </section>
-
-      <section id="content3">
-         <p>
-            Coming soon!
-         </p>
-       </section>
-
-      <section id="content4">
-         <h2>Frequently Asked Questions</h2>
-         <p>
-            Coming soon!
-         </p>
-       </section> -->
-    </main>
-    <footer>
+      </main>
+   <footer>
       <p>
          ©Copyright        
          <script>document.write(new Date().getFullYear());</script>
          | All rights reserved
       </p>
-    </footer>
+   </footer>
   </body>
 </html>
