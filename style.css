@@ -3,6 +3,7 @@
 
 html {
   min-height: 100%;
+
 }
 
 #header {
@@ -20,17 +21,18 @@ body {
   color: #555;
   /* background-color: #f4f0f2; */
   /* background-color: white; */
+  height: 100%;
   width: 100%;
 }
 
 main {
   min-width: 320px;
   width: 70%;
-  margin: 0 auto;
+  /* margin: 0 auto; */
   height: 100%;
   /* background: #fff; */
   /* padding: 2vw; */
-  margin-bottom: 5vh;
+  /* margin-bottom: 5vh; */
 }
 
 section {
@@ -53,9 +55,21 @@ section h2 {
 #buttons {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
   align-content: center;
+  /* background-color: #f58025; */
+  color: black;
+  width: 100%;
+}
+
+#help_buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 10%;
+  /* align-items: center; */
+  /* align-content: center; */
 }
 
 
@@ -96,7 +110,8 @@ footer {
   display: inline-block;
   position: relative;
   width: 100%;
-  padding-bottom: 52%;
+  margin-top: 0.5%;
+  padding-bottom: 50%;
   vertical-align: top;
   /* border: 1px dashed black; */
   overflow: auto;
@@ -214,7 +229,7 @@ form label, select {
   padding: 1em;
 }
 #buttons a span  {
-  font-size: 1em;
+  font-size: 0.75em;
   padding-top: 0.5em;
 }
 
@@ -266,12 +281,12 @@ form label, select {
   justify-content: left;
   align-items: left;
   align-content: center;
-  width: 100%;
+  width: 80%;
 }
 
 #choose_data {
   display: flex;
-  flex-flow: row;
+  flex-flow: column;
   justify-content: left;
   align-items: left;
   align-content: left;

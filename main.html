@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="utf-8" http-equiv="encoding">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Attitude Toward China </title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel= "stylesheet" href="homeStyle.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript" src="accordianScript.js" defer></script>
+    <script type="text/javascript" src="script.js" defer></script>
+  </head>
+  <body>
+   <div id="main-container">
+      <div id="source-container">
+         <!-- Title -->
+         <div id="title-container">
+            <span>Understanding</span>
+            <span>China with Numbers</span>
+         </div>
+         <!-- Search Bar -->
+         <div id="search-container">
+            <input class="input-field" type="text" placeholder="search statistics">
+            <!-- <i class="fa-solid fa-magnifying-glass"></i> -->
+         </div>
+         <!-- Foldable categories -->
+         <div class="accordian-container">
+            <!-- <h2>Research Categories</h2> -->
+        
+            <button class="accordion">Education</button>
+            <div class="accordion-content">
+               <div class="sized-box"></div>
+               <div class="dropdown-content">
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Academic Papers</a>
+                     <span id="avg-papers">/yr</span>
+                  </div>
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Aggregate Citations</a>
+                     <span id="avg-income">/yr</span>
+                  </div>
+
+               </div>
+            </div>
+        
+            <button class="accordion">Economics</button>
+            <div class="accordion-content">
+               <div class="sized-box"></div>
+               <div class="dropdown-content">
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Income</a>
+                     <span id="avg-income">USD</span>
+                  </div>
+                  <div class="dropdown-content-line">
+                     <a href="https://www.love.com">Consumption</a>
+                     <span id="avg-income">USD</span>
+                  </div>
+
+               </div>
+
+            </div>
+        
+            <button class="accordion">Infrastructure</button>
+            <div class="accordion-content">
+               <div class="sized-box"></div>
+               <div class="dropdown-content">
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Public Roads</a>
+                     <span id="avg-papers">/yr</span>
+                  </div>
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Highways/Expressways</a>
+                     <span id="avg-income">/yr</span>
+                  </div>
+
+               </div>
+            </div>
+
+            <button class="accordion">Wellness & Well-being</button>
+            <div class="accordion-content">
+               <div class="sized-box"></div>
+               <div class="dropdown-content">
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Coming Soon!</a>
+                     <!-- <span id="avg-papers">/yr</span> -->
+                  </div>
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Coming Soon!</a>
+                     <!-- <span id="avg-income">/yr</span> -->
+                  </div>
+
+               </div>
+            </div>
+       
+        
+            <button class="accordion">Innovation & Technology</button>
+            <div class="accordion-content">
+               <div class="sized-box"></div>
+               <div class="dropdown-content">
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Mobile Phones</a>
+                     <span id="avg-papers">/yr</span>
+                  </div>
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Aggregate Internet Usage</a>
+                     <span id="avg-income">/yr</span>
+                  </div>
+
+               </div>
+            </div>
+
+            <button class="accordion">Governance</button>
+            <div class="accordion-content">
+               <div class="sized-box"></div>
+               <div class="dropdown-content">
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Academic Papers</a>
+                     <span id="avg-papers">/yr</span>
+                  </div>
+                  <div class="dropdown-content-line">
+                     <a href="javascript:hi();">Aggregate Citations</a>
+                     <span id="avg-income">/yr</span>
+                  </div>
+
+               </div>
+            </div>
+
+          </div>
+         <!-- Filters -->
+         <div id="filter-container">
+            <div class="filter">
+               <span>Filter 1</span>
+               <input id="filter-one">
+            </div>
+            <div class="filter">
+               <span>Filter 2</span>
+               <input id="filter-two">
+            </div>
+            <div class="filter">
+               <span>Year</span>
+               <input style="width:20%" id="start-year">
+               <span>To</span>
+               <input style="width:20%" id="end-year">
+            </div>
+         <!-- Download data/figure -->
+         <!-- Princeton/CCC logo -->
+         <div id="logo-container">
+            <img style = "height: 7em; width: 27em" src="assets/ccc_logo.png">
+            <img style = "height: 6em; width: 20%;" src="assets/PU-standard.svg">
+         </div>
+
+         </div>
+      </div>
+   
+      <div id="svg_container">
+         
+      </div>
+   </div>
+  </body>
+
+</html>

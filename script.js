@@ -49,17 +49,20 @@ var dataSources = {
       groups: null,
    },
 }
-
+var start_year = 1800
+var end_year = 2020
+let container_width = 800;
+let container_height = 500;
 var svg = d3.select("div#svg-container")
    .append("svg")
    .attr("preserveAspectRatio", "xMinYMin meet")
-   .attr("viewBox", "0 0 1000 500")
+   .attr("viewBox", "0 0 " + container_width + " " + container_height)
    .classed("svg-content", true);
 
 d3.select("svg"),
    margin = {top: 15, right: 15, bottom: 20, left: 50},
-   width =  1000 - margin.left - margin.right,
-   height = 500 - margin.top - margin.bottom;
+   width =  container_width - margin.left - margin.right,
+   height = container_height - margin.top - margin.bottom;
    //  width = +svg.attr("width") - margin.left - margin.right,
    //  height = +svg.attr("height") - margin.top - margin.bottom;
 
@@ -271,10 +274,22 @@ function setTwoCountryLegend() {
 const buildCitationGraph = function(data) {
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+   
    // Line(s) declaration
    let USA_citations =  d3.line()
-   .x(function(d) { return x(d.year); })
-   .y(function(d) { return y(d.us_paper_citation); });
+   .x(function(d) { 
+    //    // only add items in specified date range
+    //    if (d.year >= parseTime(start_year) && d.year <= parseTime(end_year)) {
+
+    //        if (start_year != 1800)
+    //             console.log(d.year)
+    //     }
+        // console.log("damn")
+           return x(d.year);
+
+    })
+   .y(function(d) { 
+        return y(d.us_paper_citation); });
 
    let PRC_citations =  d3.line()
    .x(function(d) { return x(d.year); })
@@ -1082,12 +1097,27 @@ var parseTime = d3.timeParse("%Y");
 
 // convert the data from strings to integers
 const scienceFileConversion = function (d) {
+//    console.log(d.year);
    d.year = parseTime(d.year);
    // Strings --> Integers
    d.cn_paper_count = +d.cn_paper_count;
    d.cn_paper_citation = +d.cn_paper_citation;
    d.us_paper_count = +d.us_paper_count;
    d.us_paper_citation = +d.us_paper_citation;
+   
+   console.log("start", start_year)
+   console.log("current", d.year)
+   // only add items in specified date range
+   if (d.year < parseTime(start_year) || d.year > parseTime(end_year)) {
+        console.log(d)
+        delete d.year
+        delete d.cn_paper_count
+        delete d.cn_paper_citation
+        delete d.us_paper_count
+        delete d.us_paper_citation
+        console.log(d)
+        // if (start_year != 1800)
+    }
    return d;
 };
 
@@ -1128,47 +1158,70 @@ const roadFileConversion = function (d) {
 function citationsGraph() {
    // clear graph
    d3.selectAll("svg>*").remove();
+   update_data_sources_dict("citations");
    gatherData("data/science.csv", scienceFileConversion).then(buildCitationGraph);
 }
 
 function papersGraph() {
    // clear graph
    d3.selectAll("svg>*").remove();
+   update_data_sources_dict("papers");
    gatherData("data/science.csv", scienceFileConversion).then(buildPapersGraph);
 }
 
 function internetUseGraph() {
    // clear graph
    d3.selectAll("svg>*").remove();
+   update_data_sources_dict("internet");
    gatherData("data/internet.csv", internetFileConversion).then(data => buildInternetUseGraph(data, dataSources.internet.groups));
 }
 
 function patentGraph() {
    // clear graph
    d3.selectAll("svg>*").remove();
+   update_data_sources_dict("patent");
    gatherData("data/patent.csv", patentFileConversion).then(buildPatentGraph);
 }
 
 function roadGraph() {
    // clear graph
    d3.selectAll("svg>*").remove();
+   update_data_sources_dict("roads");
    gatherData("data/roads.csv", roadFileConversion).then(buildRoadGraph);
 }
 
+function updateYearRange() {
+    start_year = document.getElementById("start_year").options[0].innerText;
+    end_year = document.getElementById("end_year").options[0].innerText;
+    console.log(start_year)
+    console.log(end_year)
+    updateDataFromSubGroup()
+}
+function updateDataFromAccordian() {
+
+
+}
+// update data source and subgroups
+function update_data_sources_dict(champ_key) {
+    Object.keys(dataSources).forEach(key => {
+        // print(key)
+        if (key != champ_key)
+            dataSources[key].selected = false;
+        else {
+            dataSources[key].selected = true;
+            // updateGroupSelector();
+        }
+    });
+}
 // sets selected key to true for current data source and false for all others
 function updateDataSource () { 
+    // keys from data sources dict
    let values = ["citations", "papers", "roads", "internet", "patent"];
    let functions = [citationsGraph, papersGraph, roadGraph, internetUseGraph, patentGraph]
    let current_value = document.getElementById("source_selector").elements["data_source"].value;
    if (values.indexOf(current_value) > -1) {
       functions[values.indexOf(current_value)]();
-      // set dataSource
-      dataSources[current_value].selected = true;
-      // reset other dataSources to false
-      Object.keys(dataSources).forEach(key => {
-         if (key != current_value)
-            dataSources[key].selected = false;
-       });
+      update_data_sources_dict(current_value);
       updateGroupSelector();
    }
    else 
@@ -1178,8 +1231,8 @@ function updateDataSource () {
 
 // updates the options in sub-group selector based on chosen data source
 function updateGroupSelector() {
-   console.log("updating group selec")
-   group_selector = document.getElementById("group_source");
+    console.log("updating group selec")
+    group_selector = document.getElementById("group_source");
    // check that the values haven't already been updated
    if (dataSources.internet.selected) {
       let text = ["Full Data", "China (domestic)", "United States (domestic)", "Broadband", "Access", "Mobile"]
@@ -1210,6 +1263,7 @@ function updateGroupSelector() {
 }
 // updates graph to chosen sub-group from dataSource
 function updateDataFromSubGroup() {
+    console.log("updating subgroup")
    
    let current_value = document.getElementById("subgroup_selector").elements["group_source"].value;
    if (dataSources.internet.selected) {
@@ -1342,16 +1396,16 @@ function infoModal() {
 
 function toggleAnimation() {
    animate = document.getElementById("animation_btn")
-   text = document.getElementById("animate_text");
-   if (animate.className == "fa-solid fa-video fa-3x") {
-      animate.className = "fa-solid fa-video-slash fa-3x";
-      text.textContent = "No Animation"
+//    text = document.getElementById("animate_text");
+   if (animate.className == "fa-solid fa-video fa-2x") {
+      animate.className = "fa-solid fa-video-slash fa-2x";
+    //   text.textContent = "No Animation"
       animateGraph = false;
       updateDataFromSubGroup();
    }
    else {
-      animate.className = "fa-solid fa-video fa-3x";
-      text.textContent = "Animate!"
+      animate.className = "fa-solid fa-video fa-2x";
+    //   text.textContent = "Animate!"
 
       animateGraph = true;
       updateDataFromSubGroup();
