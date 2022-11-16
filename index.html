@@ -10,7 +10,10 @@
     <link rel= "stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="text/javascript" src="accordianScript.js" defer></script>
+    <!-- <script type="text/javascript" src="data_config.js" defer></script> -->
+    <script type="text/javascript" src="data_config.js" defer></script>
     <script type="text/javascript" src="script.js" defer></script>
+    <script type="text/javascript" src="drawGraphs.js" defer></script>
   </head>
   <body onload="citationsGraph()">
       <!-- <div id="header">
@@ -22,35 +25,42 @@
           <div id="source-container">
              <!-- Title -->
              <div id="title-container">
-                <p>Understanding China with Numbers</p>
+                <h1 style="margin: 0;">Understanding</h1>
+                <div id="title-row">
+                    <h3>China with Numbers </h3>
+                    <!-- <h4>with</h4>
+                    <h3>numbers</h3> -->
+                </div>
+                <!-- <p>Understanding China with Numbers</p> -->
                 <!-- <span>Understanding</span>
                 <span>China with Numbers</span> -->
              </div>
              <!-- Search Bar -->
+             <img style = "height: 5em; width: 23em" src="assets/ccc_logo.png">
              <div id="search-container">
-                <input class="input-field" type="text" placeholder="search statistics...">
-                <!-- <i class="fa-solid fa-magnifying-glass"></i> -->
+                <form action=""></form>
+                    <input class="input-field" type="text" placeholder="search statistics...">
+                    <i class="fa-solid fa-magnifying-glass icon"></i>
+                </form>
              </div>
              <!-- Foldable categories -->
              <div class="accordian-container">
                 <!-- <h2>Research Categories</h2> -->
-            
                 <button class="accordion">Education</button>
                 <div class="accordion-content">
                    <div class="sized-box"></div>
-                   <div class="dropdown-content">
-                      <div class="dropdown-content-line">
-                         <a href="javascript:papersGraph()">Academic Papers</a>
-                         <span id="avg-papers">/yr</span>
-                      </div>
-                      <div class="dropdown-content-line">
-                         <a href="javascript:citationsGraph();">Aggregate Citations</a>
-                         <span id="avg-income">/yr</span>
-                      </div>
-    
-                   </div>
+                        <div class="dropdown-content">
+                            <div class="dropdown-content-line">
+                                <a href="javascript:papersGraph()">Academic Papers</a>
+                                <span id="avg-papers">/yr</span>
+                            </div>
+                            <div class="dropdown-content-line">
+                                <a href="javascript:citationsGraph();">Aggregate Citations</a>
+                                <span id="avg-income">/yr</span>
+                            </div>
+                        </div>
                 </div>
-            
+
                 <button class="accordion">Economics</button>
                 <div class="accordion-content">
                    <div class="sized-box"></div>
@@ -60,14 +70,12 @@
                          <span id="avg-income">USD</span>
                       </div>
                       <div class="dropdown-content-line">
-                         <a href="https://www.love.com">Consumption</a>
+                         <a href="">Consumption</a>
                          <span id="avg-income">USD</span>
                       </div>
-    
                    </div>
-    
                 </div>
-            
+
                 <button class="accordion">Infrastructure</button>
                 <div class="accordion-content">
                    <div class="sized-box"></div>
@@ -83,7 +91,7 @@
     
                    </div>
                 </div>
-    
+
                 <button class="accordion">Wellness & Well-being</button>
                 <div class="accordion-content">
                    <div class="sized-box"></div>
@@ -99,14 +107,13 @@
     
                    </div>
                 </div>
-           
-            
+
                 <button class="accordion">Innovation & Technology</button>
                 <div class="accordion-content">
                    <div class="sized-box"></div>
                    <div class="dropdown-content">
                       <div class="dropdown-content-line">
-                         <a href="javascript:internetUseGraph();">Mobile Phones</a>
+                         <a href="javascript:patentGraph();">Patents and IP</a>
                          <span id="avg-papers">/yr</span>
                       </div>
                       <div class="dropdown-content-line">
@@ -116,24 +123,22 @@
     
                    </div>
                 </div>
-    
+
                 <button class="accordion">Governance</button>
                 <div class="accordion-content">
                    <div class="sized-box"></div>
                    <div class="dropdown-content">
                       <div class="dropdown-content-line">
-                         <a href="javascript:hi();">Academic Papers</a>
+                         <a href="javascript:papersGraph();">Academic Papers</a>
                          <span id="avg-papers">/yr</span>
                       </div>
                       <div class="dropdown-content-line">
-                         <a href="javascript:hi();">Aggregate Citations</a>
+                         <a href="javascript:citationsGraph();">Aggregate Citations</a>
                          <span id="avg-income">/yr</span>
                       </div>
-    
                    </div>
                 </div>
-    
-              </div>
+             </div>
              <!-- Filters -->
              <div id="filters">
                 <div id="choose_data">
@@ -150,44 +155,74 @@
                             <i onclick="downloadDataSource()" class="fa-solid fa-file-arrow-down fa-xl"></i>
                          </a> -->
                   </form>
-                      <form id="graphtype_selector" onsubmit="false" target="_top">
+                  <form id="filters_form">
+                    <div id="graphtype_selector">
+                        <label for="graph_type" style="background-color: white;">Graphic:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        </label>
+                        <select name="graph_type" class="filter_select" id="graph_type" onchange="updateGraphType()">
+                        <option value="line">Line Chart</option>
+                        <option value="stack">Stack Chart</option>
+                        <!-- <option value="histogram">Histogram Chart</option> -->
+                        </select>
+                    </div>
+                    <div id="subgroup_selector">
+                        <label for="subgroup" style="background-color: white;">Subgroup:&nbsp&nbsp&nbsp
+                        </label>
+                          <select name="subgroup" class="filter_select" id="subgroup" onchange="updateGroupSelector()">
+                             <option value="">All Data</option>
+                          </select>
+                    </div>
+                    <div id="year_range_selector">
+                        <label for="start_year" style="background-color: white;">Year:</label>
+                        <select name="start_year" id="start_year" onchange="setYearRange()()">
+                            <!-- <option value="">1890</option>
+                            <option value="">1850</option> -->
+                        </select>
+                        <span>to</span>
+                        <select name="end_year" id="end_year" onchange="setYearRange()()">
+                            <!-- <option value="">1990</option>
+                            <option value="">2010</option> -->
+                         </select>
+                    </div>
+                  </form>
+
+
+                      <!-- <form id="graphtype_selector" onsubmit="false" target="_top">
                          <label for="graph_type" style="background-color: white;">Graphic:</label>
                          <select name="graph_type" id="graph_type" onchange="updateGraphType()">
                             <option value="line">Line Chart</option>
                             <option value="stack">Stack Chart</option>
-                            <!-- <option value="histogram">Histogram Chart</option> -->
-                            </select>
+                            <option value="histogram">Histogram Chart</option> -->
+                            <!-- </select> -->
                             <!-- <a>
                                <i onclick="toggleAnimation()" id="animation_bt" class="downloader fa-solid fa-video-slash fa-xl"></i>
                             </a> -->
-    
-                      </form>
-                
+                      <!-- </form>
                    <form id="subgroup_selector" onsubmit="false" target="_top">
-                      <label for="group_source" style="background-color: white;">Subgroup:</label>
-                      <select name="group_source" id="group_source" onchange="updateDataFromSubGroup()">
-                         <option value="">Full Data</option>
+                      <label for="subgroup" style="background-color: white;">Subgroup:</label>
+                      <select name="subgroup" id="subgroup" onchange="updateDataFromSubGroup()">
+                         <option value="">All Data</option>
                          </select>
-                         <!-- <a>
+                         <a>
                             <i class="fa-solid fa-chart-line fa-xl"></i>
                          </a> -->
-                   </form>
+                   <!-- </form>
 
                    <form id="year_range_selector" onsubmit="false" target="_top">
                     <label for="start_year" style="background-color: white;">Year:</label>
-                    <select name="start_year" id="start_year" onchange="updateYearRange()">
+                    <select name="start_year" id="start_year" onchange="setYearRange()()">
                         <option value="">1890</option>
                         <option value="">1850</option>
                     </select>
                     <span>to</span>
-                    <select name="end_year" id="end_year" onchange="updateYearRange()">
+                    <select name="end_year" id="end_year" onchange="setYearRange()()">
                         <option value="">1990</option>
                         <option value="">2010</option>
                      </select>
-                       <!-- <a>
+                        <a>
                           <i class="fa-solid fa-chart-line fa-xl"></i>
                        </a> -->
-                 </form>
+                 <!-- </form> -->
                 </div>
              </div>
              <!-- <div id="filter-container">
@@ -208,84 +243,76 @@
               Download data/figure -->
 
               <!-- download Buttons -->
-              <div id="buttons">
+             <div id="buttons">
                 <a id="source_downloader" class="downloader">
-                   <i onclick="downloadDataSource()" class="fa-solid fa-file-arrow-down fa-lg"></i>
-                   <span>CSV data</span>
-                   
+                    <i onclick="downloadDataSource()" class="fa-solid fa-file-arrow-down fa-lg"></i>
+                    <span>Download Data</span>
                 </a>
                 <a class="downloader">
-                   <i onclick="downloadSvg()" id="graph_downloader" class="fa-solid fa-chart-line fa-lg"></i>
-                   <span>SVG graph</span>
+                    <i onclick="downloadSvg()" id="graph_downloader" class="fa-solid fa-chart-line fa-lg"></i>
+                    <span>Download Figure</span>
                 </a>
              </div>
              <!-- Princeton/CCC logo -->
              <div id="logo-container">
-                <img style = "height: 4em; width: 35%" src="assets/ccc_logo.png">
-                <img style = "height: 6em; width: 50%;" src="assets/PU-standard.svg">
+                 <img style = "height: 6em; width: 35%;" src="assets/PU-standard.svg">
+                <img style = "height: 4em; width: 55%" src="assets/ccc_logo.png">
              </div>
-             
-            
-    
-            </div> 
+            </div>
           <!-- </div> -->
           <div id="data-container">
-             
-            <div id ="help_buttons">
-                <!-- Animation Button -->
-                <a class="downloader">
-                <i onclick="toggleAnimation()" id="animation_btn" class="fa-solid fa-video-slash fa-2x"></i>
-                <!-- <span id="animate_text">No Animation</span> -->
-                </a>
-             <!-- The Modal -->
-             <div id="info">
-             <i onclick="infoModal()" class="fa-solid fa-circle-question fa-2x"></i>
-             <div id="myModal" class="modal">
-                <!-- Modal content -->
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2>Data Visualizer User Guide</h2>
-                    <h4>Choosing Data</h4>
-                    <p>Use the first selector labeled <i>"Data Source"</i> to choose from our available data. Currently we have data on science, internet use, road construction and patents.
-                    </p>
-                    <h4>Isolating Groups</h4>
-                    <p>For data sources with many lines, you can select a subcategory using the second selector labeled <i>"Subcategory"</i> to view line groups with fewer lines. This extends into domestic and cross-country analysis.</p>
-                    <h4>Buttons</h4>
-                    <p>
-                        <i class="fa-solid fa-video fa-xl"></i>
-                        Click the video button to disable the graphs animation.
-                    </p>
-                    <p>
-                        <i class="fa-solid fa-video-slash fa-xl"></i>
-                        Click the slashed video button to animate the graph and watch the lines grow! Keep in mind that some graphs such as stack charts are not built for traditional line animation and may appear skewed.
-                    </p>
-                    <p>
-                        <i class="fa-solid fa-file-arrow-down fa-xl"></i>
-                        This button allows you to download the data source files in CSV format. 
-                    </p>
-                    <p>
-                        <i class="downloader fa-solid fa-chart-line fa-xl"></i>
-                        This button allows you to download the generated graphs in SVG format.
-                    </p>
+             <!-- Animation Toggle/Help Modal -->
+             <div id="floating_buttons">
+                <div id ="help_buttons">
+                    <!-- Animation Button -->
+                    <a class="downloader">
+                    <i onclick="toggleAnimation();" id="animation_btn" class="fa-solid fa-video-slash fa-2x"></i>
+                    <!-- <span id="animate_text">No Animation</span> -->
+                    </a>
+                    <!-- The Modal -->
+                    <div id="info">
+                        <i onclick="infoModal()" class="fa-solid fa-circle-question fa-2x"></i>
+                        <div id="myModal" class="modal">
+                            <!-- Modal content -->
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h2>Data Visualizer User Guide</h2>
+                                <h4>Choosing Data</h4>
+                                <p>Use the first selector labeled <i>"Data Source"</i> to choose from our available data. Currently we have data on science, internet use, road construction and patents.
+                                </p>
+                                <h4>Isolating Groups</h4>
+                                <p>For data sources with many lines, you can select a subcategory using the second selector labeled <i>"Subcategory"</i> to view line groups with fewer lines. This extends into domestic and cross-country analysis.</p>
+                                <h4>Buttons</h4>
+                                <p>
+                                    <i class="fa-solid fa-video fa-xl"></i>
+                                    Click the video button to disable the graphs animation.
+                                </p>
+                                <p>
+                                    <i class="fa-solid fa-video-slash fa-xl"></i>
+                                    Click the slashed video button to animate the graph and watch the lines grow! Keep in mind that some graphs such as stack charts are not built for traditional line animation and may appear skewed.
+                                </p>
+                                <p>
+                                    <i class="fa-solid fa-file-arrow-down fa-xl"></i>
+                                    This button allows you to download the data source files in CSV format. 
+                                </p>
+                                <p>
+                                    <i class="downloader fa-solid fa-chart-line fa-xl"></i>
+                                    This button allows you to download the generated graphs in SVG format.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
              </div>
-           </div>
-              
-          
-        </div>
-           <!-- SVG Graphic -->
-           <div id ="svg-container"></div>    
-
-          </div>  
+            <!-- SVG Graphic -->
+            <div id ="svg-container"></div>
+          </div>
       </div>
-      <!-- <main>     
-        
-
-         
+      <!-- <main>
       </main> -->
    <!-- <footer>
       <p>
-         ©Copyright        
+         ©Copyright
          <script>document.write(new Date().getFullYear());</script>
          | All rights reserved
       </p>

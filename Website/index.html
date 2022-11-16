@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="utf-8" http-equiv="encoding">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Attitude Toward China </title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel= "stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript" src="script.js" defer></script>
+  </head>
+  <!-- onload="citationsGraph()" -->
+  <body onload="citationsGraph()">
+   <div id="header">
+      <img style = "height: 7em; width: 27em" src="assets/ccc_logo.png">
+      <img style = "height: 6em; width: 20%;" src="assets/PU-standard.svg">
+   </div>
+   <bold>
+   </bold>
+   <p id="title">China Impact Project</p>
+
+   <main>
+      
+      <input id="tab1" type="radio" class = "tabs" name="tabs" checked>
+      <label for="tab1">Data Visualization</label>
+        
+      <input id="tab2" type="radio" class = "tabs" name="tabs">
+      <label for="tab2" style="margin-left: -10px">About Us</label>
+      
+      <input id="tab3" type="radio" class = "tabs" name="tabs">
+      <label for="tab3" style="margin-left: -10px">Newsletter</label>
+        
+      <input id="tab4" type="radio" class = "tabs" name="tabs">
+      <label for="tab4" style="margin-left: -10px">FAQ</label>
+           
+      <section id="content1">
+         <form id= "source_selector" onsubmit="false" target="_top">
+            <label for="data_source" style="background-color: white;">Data Source:</label>
+            <select name="data_source" id="data_source" onchange="updateSource()">
+              <option value="citations">Citation Data</option>
+              <option value="papers">Paper Publishing Data</option>
+              <option value="roads">Street/Road Data</option>
+              <option value="internet">Internet Usage Data</option>
+              <option value="patent">Patent Data</option>
+            </select>
+         </form>
+         <div id ="svg-container">
+            <!-- <svg class = "svg-content"></svg> -->
+         </div>
+        
+      </section>
+
+      <section id="content2">
+         <h2>About the Project</h2>
+         <p>
+            We are social scientists who believe in the importance of understanding social reality for public policy and public discourse. After achieving rapid economic growth since the Economic Reform that began in 1978, China now impacts the rest of the world in significant ways, in almost all domains and walks of life. Yet, little is known about people’s attitudes towards China. Most policy discussions about China’s international relationships have focused mainly on the attitudes of political and business elites in other countries. It is time to correct the imbalance.
+         </p>
+         <p>
+            We are dedicated to measuring, documenting, understanding, and disseminating information about ordinary people’s attitudes towards China. While we are keenly aware that public opinion is inherently fluid, subject to being influenced by politicians, media, and even research methodology, public opinion is real and has real social consequences. Those who ignore it do so at their own peril.
+         </p>
+         <p>
+            We have collected all the relevant data that we could obtain from many sources for our purpose. On this website, we present this data in formats that make it easy to understand.
+         </p>
+         <p>
+            As researchers, we believe in scientific objectivity and wish to present data impartially. Not only are we not political, we are not even interested in policy implications. Consumers of our website can draw their own political and policy inferences. We are only data providers, or modern-day messengers. No more, no less.
+         </p>
+
+         <div id="people"> 
+            <div class = "center_affiliate">
+               <center>
+                  <a target="_blank" href="https://ccc.princeton.edu/people/yu-xie">
+                     <h2>Yu Xie</h2>
+                     <img alt="Yu Xie" src="assets/xie.jpeg">
+                     <p style = "font-size: x-small">
+                        Bert G. Kerstetter '66 University Professor of Sociology and the Princeton Institute for International and Regional Studies Princeton University
+                     </p>
+                  </a>
+               </center>
+            </div>
+
+            <div class = "center_affiliate">
+               <center>
+                  <a target="_blank" href="https://soc.iastate.edu/directory/dr-shawn-dorius/">
+                     <h2>Shawn F Dorius</h2>
+                     <img alt="Shawn F Dorius" src="assets/shawn.jpeg">
+                     <p>
+                        Associate Professor of Sociology <br> Iowa State University
+                     </p>
+                  </a>
+               </center>
+            </div>
+
+            <div class = "center_affiliate">
+               <center>
+                  <a target="_blank" href="https://ccc.princeton.edu/people/donghui-wang">
+                     <h2>Donghui Wang</h2>
+                     <img alt="Donghui Wang" src="assets/donghui.jpeg">
+                     <p>
+                        Postdoctoral Research Associate <br>Princeton University 
+                     </p>
+                  </a>
+               </center>
+            </div>
+
+            <div class = "center_affiliate">
+               <center>
+                  <a target="_blank" href="https://ccc.princeton.edu/people/yongai-jin">
+                     <h2>Yongai Jin</h2>
+                     <img alt="Yongai Jin" src="assets/yongai.jpeg">
+                     <p>
+                        Global Scholar <br> Renmin University
+                     </p>
+                  </a>
+               </center>
+            </div>
+
+            <div class = "center_affiliate">
+               <center>
+                  <a target="_blank" href="https://ccc.princeton.edu/people/junming-huang">
+                     <h2>Junming Huang</h2>
+                     <img alt="Junming Huang" src="assets/junming.jpeg">
+                     <p>
+                        Associate Research Scholar <br> Princeton University
+                     </p>
+                  </a>
+               </center>
+            </div>
+
+            <div class = "center_affiliate">
+               <center>
+                  <a target="_blank" href="https://ccc.princeton.edu/people/ziye-zhang">
+                     <h2>Ziye Zhang</h2>
+                     <img alt="Ziye Zhang" src="assets/ziye.jpeg">
+                     <p>
+                        Postdoctoral Research Associate<br> <br>
+                     </p>
+                  </a>
+               </center>
+            </div>
+
+            <div class = "center_affiliate">
+               <center>
+                  <a target="_blank" href="https://ccc.princeton.edu/lemeng-liang">
+                     <h2>Lemeng Liang</h2>
+                     <img alt="Lemeng Liang" src="assets/lemeng.jpeg">
+                     <p>
+                        Journalism and Communication <br> '20 Tsinghua University 
+                     </p>
+                  </a>
+               </center>
+            </div>
+         </div>
+         
+      </section>
+
+      <section id="content3">
+         <p>
+            Coming soon!
+         </p>
+       </section>
+
+      <section id="content4">
+         <h2>Frequently Asked Questions</h2>
+         <p>
+            Coming soon!
+         </p>
+       </section>
+    </main>
+    <footer>
+      <p>
+         ©Copyright        
+         <script>document.write(new Date().getFullYear());</script>
+         | All rights reserved
+      </p>
+    </footer>
+  </body>
+</html>

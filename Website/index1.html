@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="utf-8" http-equiv="encoding">
+    <title>This is the title of the webpage!</title>
+    <link rel= "stylesheet" href="style.css">
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.4/d3.min.js" integrity="sha512-hnFpvCiJ8Fr1lYLqcw6wLgFUOEZ89kWCkO+cEekwcWPIPKyknKV1eZmSSG3UxXfsSuf+z/SgmiYB1zFOg3l2UQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript" src="script.js" defer></script>
+      
+  </head>
+  <body>
+   <div id="header">
+      <img src="assets/PU-standard.svg">
+      <img src="assets/ccc_logo.png">
+   </div>
+   <center>
+   <div class="dropdown">
+      <button class="dropbtn">Choose Data Source</button>
+      <div class="dropdown-content">
+        <button onclick="citationsGraph()">Citations</button>
+        <button onclick="papersGraph()">Papers</button>
+        <button onclick="roadGraph()">Roads/Highways</button>
+        <button onclick="internetUseGraph()">Internet</button>
+        <button onclick="patentGraph()">Patents</button>
+      </div>
+    </div>
+      <h1>China Impact Project</h1>
+      <svg width="800" height="500"></svg>
+   </center>
+   
+  </body>
+</html>
