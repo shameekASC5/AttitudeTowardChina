@@ -331,12 +331,12 @@ const buildCitationGraph = function(data) {
 
       focus.append("text")
          .attr("class", "usa")
-         .attr("x", 260)
+         .attr("x", 280)
          .attr("y", 65)
 
       focus.append("text")
          .attr("class", "prc")
-         .attr("x", 260)
+         .attr("x", 280)
          .attr("y", 95)
 
 		var overlay = svg.append("rect")
@@ -473,7 +473,7 @@ const buildPapersGraph = function (data) {
 
       focus.append("text")
          .attr("class", "prc")
-         .attr("x", 200)
+         .attr("x", 225)
          .attr("y", 95)
 
 		var overlay = svg.append("rect")
@@ -733,7 +733,6 @@ const buildInternetUseGraph = function (data) {
 };
 
 const buildPatentGraph = function (data) {
-    console.log(data)
    setDataSource("patent");
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
    
@@ -809,12 +808,12 @@ const buildPatentGraph = function (data) {
 
       focus.append("text")
          .attr("class", "usa")
-         .attr("x", 175)
+         .attr("x", 200)
          .attr("y", 65)
 
       focus.append("text")
          .attr("class", "prc")
-         .attr("x", 175)
+         .attr("x", 225)
          .attr("y", 95)
 
 		var overlay = svg.append("rect")
@@ -839,23 +838,23 @@ const buildPatentGraph = function (data) {
       
             focus.select("line")
                .attr("transform", 
-                  "translate(" + x(d['Year']) + "," + height + ")");
+                  "translate(" + x(d['year']) + "," + height + ")");
       
             focus.selectAll(".circle1")
                .attr("r", "5")
                .attr("stroke", "black")
                .attr("transform", 
-                  "translate(" + x(d['Year']) + "," + y(d["US patents assignment"]) + ")");
+                  "translate(" + x(d['year']) + "," + y(d["US patents assignment"]) + ")");
             
             focus.selectAll(".circle2")
                .attr("stroke", "black")
                .attr("transform", 
-                  "translate(" + x(d['Year']) + "," + y(d["中国专利授权量"]) + ")");
+                  "translate(" + x(d['year']) + "," + y(d["中国专利授权量"]) + ")");
       
             focus.selectAll(".year_display")
                .attr("transform", 
-                  "translate(" + x(d['Year']) + "," + (height + 0.75*margin.bottom) + ")")
-               .text(dateFormat(d['Year']));
+                  "translate(" + x(d['year']) + "," + (height + 0.75*margin.bottom) + ")")
+               .text(dateFormat(d['year']));
             
             focus.selectAll(".usa")
                .text(d["US patents assignment"].toLocaleString());
@@ -1058,9 +1057,9 @@ const buildRoadGraph = function (data) {
 
 function filterYears(data) {
     output = []
-    console.log("---filter----")
-    console.log(start_year)
-    console.log(end_year)
+    // console.log("---filter----")
+    // console.log(start_year)
+    // console.log(end_year)
     data.forEach(d => {
         if (d.year >= parseTime(start_year) && d.year <= parseTime(end_year)) {
             // console.log("yoo")
@@ -1068,7 +1067,7 @@ function filterYears(data) {
             output.push(d)
         }
     })
-    console.log(output)
+    // console.log(output)
     return output;
     
 }
@@ -1095,16 +1094,16 @@ const scienceFileConversion = function (d) {
 //    console.log("start", start_year)
 //    console.log("current", d.year)
    // only add items in specified date range
-   if (d.year < parseTime(start_year) || d.year > parseTime(end_year)) {
-        console.log(d)
-        delete d.year
-        delete d.cn_paper_count
-        delete d.cn_paper_citation
-        delete d.us_paper_count
-        delete d.us_paper_citation
-        console.log(d)
-        // if (start_year != 1800)
-    }
+//    if (d.year < parseTime(start_year) || d.year > parseTime(end_year)) {
+//         console.log(d)
+//         delete d.year
+//         delete d.cn_paper_count
+//         delete d.cn_paper_citation
+//         delete d.us_paper_count
+//         delete d.us_paper_citation
+//         console.log(d)
+//         // if (start_year != 1800)
+//     }
    return d;
 };
 

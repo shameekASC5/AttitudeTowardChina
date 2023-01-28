@@ -26,7 +26,7 @@
     flex-direction: column;
     /* justify-content: space-between; */
     align-items: center;
-    width: 75%;
+    width: 80%;
     height: 100%;
     /* border: 1px solid grey; */
     /* height: 100%; */
@@ -110,10 +110,10 @@
     /* background-color: #f58025; */
 }
 
-#svg-container {
+/* #svg-container {
    width: 75%;
    height: 80%;
-}
+} */
 
 /* Dropdown Content */
 .accordian-container {

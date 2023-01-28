@@ -47,7 +47,9 @@ function setYearOptions() {
     max_year = source["max_year"]
     console.log(min_year)
     start = document.getElementById("start_year");
+    contains_start = false
     end = document.getElementById("end_year");
+    contains_end = false
     // reset options, one for each year in range
     for (let i = start.length; i >= 0 ; i--) {
         start.remove(i)
@@ -57,12 +59,16 @@ function setYearOptions() {
     }
     for (let i = min_year; i < max_year; i++) {
         start.options[start.length] = new Option(i.toString(), i.toString());
+        if (i == start_year)
+            contains_start = true
     }
     for (let i = max_year; i >= min_year; i--) {
         end.options[end.length] = new Option(i.toString(), i.toString());
+        if (i == end_year)
+            contains_end = true
     }
-    start.value = start_year
-    end.value = end_year
+    start.value = contains_start ? start_year : min_year
+    end.value = contains_end ? end_year : max_year
 }
 
 function updateYearRange() {
@@ -70,9 +76,9 @@ function updateYearRange() {
     end_sel = document.getElementById("end_year");
     start_year = parseInt(start_sel.options[start_sel.selectedIndex].text)
     end_year = parseInt(end_sel.options[end_sel.selectedIndex].text)
-    console.log("--update--")
-    console.log(start_year)
-    console.log(end_year)
+    // console.log("--update--")
+    // console.log(start_year)
+    // console.log(end_year)
     updateDataFromGroup()
 }
 
@@ -368,4 +374,4 @@ function updateGraphType() {
             .text(lineNames[i])
             .attr("alignment-baseline","middle")
       }
-    */
+    */ 
