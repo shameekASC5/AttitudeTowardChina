@@ -1,15 +1,16 @@
 full_data_string = "All Data"
+animateGraph = false; // determines whether lines will animate
 
 ccc_dataSources = [
     {
        "name": "citations",
        "generative_func": "citationsGraph",
-       "selected":true,
+       "selected": true,
        "filepath":"data/science.csv",
        "min_year": 1800,
        "max_year": 2020,
        "groups": {
-            "All Data": full_data_string,
+            "All Data": true,
             "China (domestic)": false,
             "United States (domestic)": false,
         }
@@ -22,20 +23,20 @@ ccc_dataSources = [
        "min_year": 1800,
        "max_year": 2020,
        "groups": {
-            "All Data": full_data_string,
+            "All Data": true,
             "China (domestic)": false,
             "United States (domestic)": false,
         }
     },
     {
        "name": "roads",
-       "generative_func": "roadGraph()",
+       "generative_func": "roadGraph",
        "selected":false,
        "filepath":"data/roads.csv",
-       "min_year": 1800,
+       "min_year": 1980,
        "max_year": 2020,
        "groups": {
-          "All Data": full_data_string,
+          "All Data": true,
           "China (domestic)": false,
           "United States (domestic)": false,
           "Highways": false,
@@ -47,10 +48,10 @@ ccc_dataSources = [
         "generative_func": "internetUseGraph",
         "selected":false,
         "filepath":"data/internet.csv",
-        "min_year": 1800,
+        "min_year": 1997,
         "max_year": 2020,
         "groups": {
-          "All Data": full_data_string,
+          "All Data": true,
           "China (domestic)": false,
           "United States (domestic)": false,
           "Broadband": false,
@@ -60,13 +61,13 @@ ccc_dataSources = [
     },
     {
         "name": "patent",
-        "generative_func": null,
+        "generative_func": "patentGraph",
         "selected": false,
         "filepath":"data/patent.csv",
-        "min_year": 1800,
+        "min_year": 1970,
         "max_year": 2020,
         "groups": {
-            "All Data": full_data_string,
+            "All Data": true,
             "China (domestic)": false,
             "United States (domestic)": false,
         }

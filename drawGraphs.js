@@ -7,7 +7,6 @@ var PRC_tertiary = "#CF666D";
 
 var strokeWidth = 3;
 var animationDuration = 5;
-var animateGraph = false; // determines whether lines will animate
 var fillOpacity = "0.0";
 
 // default is citations
@@ -431,7 +430,7 @@ const buildPapersGraph = function (data) {
    drawLines(data, lines, colors, lineNames, animateGraph);
    svg.call(hover)
 
-	function hover() {
+   function hover() {
 
 		var bisect = d3.bisector(d => d.year).left,
 			format = d3.format("+.0%"),
@@ -529,8 +528,8 @@ const buildPapersGraph = function (data) {
 
 const buildInternetUseGraph = function (data) {
 //    setDataSource("internet");
-   internetGroups = setDataSource("internet").groups;
-   generateAll = !internetGroups[full_data_string]
+   internetGroups =  getSelectedDataSource().groups;
+   generateAll = internetGroups[full_data_string]
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
    console.log("check func")
    console.log(internetGroups)
@@ -734,20 +733,21 @@ const buildInternetUseGraph = function (data) {
 };
 
 const buildPatentGraph = function (data) {
+    console.log(data)
    setDataSource("patent");
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
    
    // Line(s) declaration
    let us_patent_assignments =  d3.line()
-   .x(function(d) { return x(d['Year']); })
+   .x(function(d) { return x(d['year']); })
    .y(function(d) { return y(d["US patents assignment"]); });
 
    let cn_patent_assignments =  d3.line()
-   .x(function(d) { return x(d['Year']); })
+   .x(function(d) { return x(d['year']); })
    .y(function(d) { return y(d["中国专利授权量"]); });
 
    // d3.extent() returns min/max tuple of input array
-   x.domain(d3.extent(data, function(d) { return d['Year']; }));
+   x.domain(d3.extent(data, function(d) { return d['year']; }));
    y.domain([-50000, d3.max(data, function(d) { return d["中国专利授权量"]; })]);
 
    // Axis declaration
@@ -770,10 +770,10 @@ const buildPatentGraph = function (data) {
    let lineNames = ["US Patents", "China Patents"];
    drawLines(data, lines, colors, lineNames, animateGraph);
 
-   svg.call(hover(100));
+   svg.call(hover)
    function hover() {
 
-		var bisect = d3.bisector(d => d['Year']).left,
+		var bisect = d3.bisector(d => d['year']).left,
 			format = d3.format("+.0%"),
 			dateFormat = d3.timeFormat("%Y")
 
@@ -870,7 +870,8 @@ const buildPatentGraph = function (data) {
 };
 
 const buildRoadGraph = function (data) {
-   roadGroups = setDataSource("roads").groups;
+   roadGroups = getSelectedDataSource().groups;
+   console.log(roadGroups)
    generateAll = roadGroups[full_data_string]
 
    graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -924,7 +925,8 @@ const buildRoadGraph = function (data) {
       animate = true;
       drawLines(data, lines, colors, lineNames, animate, 100);
    }
-   else if (roadGroups.chinaOnly) {
+  
+   else if (roadGroups["China (domestic)"]) {
       lines = [cn_highway, cn_expressway];
       colors = [PRC_primary, PRC_secondary];
       lineNames = [ "PRC Highways", "PRC Expressways"];
@@ -932,21 +934,21 @@ const buildRoadGraph = function (data) {
       svg.call(hover("China: Highway Length (by 10,000 kilometers)", "China: Length of Expressways (by 10,000 kilometers)"))
 
    }
-   else if (roadGroups.usOnly) {
+   else if (roadGroups["United States (domestic)"]) {
       lines = [us_public_roads, us_expressway];
       colors = [USA_primary, USA_secondary];
       lineNames = ["US public road and street", "US interstate and other freeway/expressways"];
       drawLines(data, lines, colors, lineNames, animate, 100);
       svg.call(hover("US: Public  Road  and  Street  Length in US (by 10,000 kilometers)","US: Length of Interstate and Other Freeways and Expressways (by 10,000 kilometers)"))
    }
-   else if (roadGroups.highways) {
+   else if (roadGroups["Highways"]) {
       lines = [cn_highway, us_public_roads];
       colors = [PRC_primary, USA_primary];
       lineNames = ["PRC Highways", "US public road and street",];
       drawLines(data, lines, colors, lineNames, animate, 100);
       svg.call(hover("China: Highway Length (by 10,000 kilometers)", "US: Public  Road  and  Street  Length in US (by 10,000 kilometers)"))
    }
-   else if (roadGroups.expressways) {
+   else if (roadGroups["Expressways"]) {
       lines = [cn_expressway,us_expressway];
       colors = [PRC_primary, USA_primary, ];
       lineNames = ["PRC Expressways", "US interstate and other freeway/expressways"];
@@ -1056,20 +1058,24 @@ const buildRoadGraph = function (data) {
 
 function filterYears(data) {
     output = []
+    console.log("---filter----")
+    console.log(start_year)
+    console.log(end_year)
     data.forEach(d => {
-        if (d.year >= parseTime(start_year) || d.year <= parseTime(end_year)) {
+        if (d.year >= parseTime(start_year) && d.year <= parseTime(end_year)) {
             // console.log("yoo")
             // console.log(d.year)
             output.push(d)
         }
     })
+    console.log(output)
     return output;
     
 }
 // handle d3.csv file retrevial 
 async function gatherData(source, conversion) {
    const data = await d3.csv(source, conversion);
-//    console.log()
+//    console.log(data)
    return filterYears(data);
 }
 
@@ -1120,7 +1126,7 @@ const internetFileConversion = function (d) {
 };
 
 const patentFileConversion = function (d) {
-   d['Year'] = parseTime(d['Year']);
+   d['year'] = parseTime(d['year']);
    d["US patents assignment"] = +d["US patents assignment"].replace(/,/g, "");
    d["中国专利授权量"] = +d["中国专利授权量"].replace(/,/g, ""); 
    return d;
@@ -1151,10 +1157,12 @@ function papersGraph() {
 }
 
 function internetUseGraph() {
+   console.log("HELLO")
    // clear graph
    d3.selectAll("svg>*").remove();
    setDataSource("internet");
    gatherData("data/internet.csv", internetFileConversion).then(buildInternetUseGraph);
+   console.log("HELLO")
 }
 
 function patentGraph() {
@@ -1177,5 +1185,5 @@ function setYearRange() {
     console.log(start_year)
     console.log(end_year)
     setYearOptions();
-    updateDataFromSubGroup()
+    updateDataFromGroup()
 }

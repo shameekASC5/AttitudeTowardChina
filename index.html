@@ -165,21 +165,21 @@
                         <!-- <option value="histogram">Histogram Chart</option> -->
                         </select>
                     </div>
-                    <div id="subgroup_selector">
-                        <label for="subgroup" style="background-color: white;">Subgroup:&nbsp&nbsp&nbsp
+                    <div id="Group_selector">
+                        <label for="Group" style="background-color: white;">Group:&nbsp&nbsp&nbsp
                         </label>
-                          <select name="subgroup" class="filter_select" id="subgroup" onchange="updateGroupSelector()">
+                          <select name="Group" class="filter_select" id="Group" onchange="updateDataFromGroup()">
                              <option value="">All Data</option>
                           </select>
                     </div>
                     <div id="year_range_selector">
                         <label for="start_year" style="background-color: white;">Year:</label>
-                        <select name="start_year" id="start_year" onchange="setYearRange()()">
+                        <select name="start_year" id="start_year" onchange="updateYearRange()">
                             <!-- <option value="">1890</option>
                             <option value="">1850</option> -->
                         </select>
                         <span>to</span>
-                        <select name="end_year" id="end_year" onchange="setYearRange()()">
+                        <select name="end_year" id="end_year" onchange="updateYearRange()">
                             <!-- <option value="">1990</option>
                             <option value="">2010</option> -->
                          </select>
@@ -198,9 +198,9 @@
                                <i onclick="toggleAnimation()" id="animation_bt" class="downloader fa-solid fa-video-slash fa-xl"></i>
                             </a> -->
                       <!-- </form>
-                   <form id="subgroup_selector" onsubmit="false" target="_top">
-                      <label for="subgroup" style="background-color: white;">Subgroup:</label>
-                      <select name="subgroup" id="subgroup" onchange="updateDataFromSubGroup()">
+                   <form id="Group_selector" onsubmit="false" target="_top">
+                      <label for="Group" style="background-color: white;">Group:</label>
+                      <select name="Group" id="Group" onchange="updateDataFromGroup()">
                          <option value="">All Data</option>
                          </select>
                          <a>

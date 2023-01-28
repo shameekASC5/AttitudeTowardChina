@@ -1,34 +1,40 @@
-// update data source and subgroups
+// get data source
+function getSelectedDataSource() {
+    for (let i = 0; i < ccc_dataSources.length; i++) {
+        source =  ccc_dataSources[i]
+        if (source.selected) {
+            // console.log(source)
+            return source;
+        }
+    }
+}
+
+// update data source and Groups, set off state for other data sources
 function setDataSource(filename) {
     output = ""
+    current = getSelectedDataSource()
     ccc_dataSources.forEach(source => {
         if (source.name == filename) {
             source.selected = true;
             console.log(source)
             output = source
         }
+        else 
+            source.selected = false
     })
     setYearOptions();
-    setGroupSelectorGroups();
+    if (current != output)
+        setGroupSelectorGroups();
     return output
 }
-// get data source
-function getSelectedDataSource() {
-    for (let i = 0; i < ccc_dataSources.length; i++) {
-        source =  ccc_dataSources[i]
-        if (source.selected) {
-            console.log(source)
-            return source;
-        }
-    }
-}
 
-// set subgroup to true for the selected source
-function setSubGroup(groupName) {
+
+// set Group to true for the selected source
+function setGroup(groupName) {
     source = getSelectedDataSource()
     set_all_other_keys_false(source.groups, groupName);
     Object.keys(source.groups).forEach(key => {
-        if (source.groups[key] == groupName) {
+        if (key == groupName) {
             source.groups[key] = true;
         }
     })
@@ -43,10 +49,10 @@ function setYearOptions() {
     start = document.getElementById("start_year");
     end = document.getElementById("end_year");
     // reset options, one for each year in range
-    for (let i = 1; i < start.length; i++) {
+    for (let i = start.length; i >= 0 ; i--) {
         start.remove(i)
     }
-    for (let i = 1; i < end.length; i++) {
+    for (let i = end.length; i >= 0 ; i--) {
         end.remove(i)
     }
     for (let i = min_year; i < max_year; i++) {
@@ -55,37 +61,29 @@ function setYearOptions() {
     for (let i = max_year; i >= min_year; i--) {
         end.options[end.length] = new Option(i.toString(), i.toString());
     }
+    start.value = start_year
+    end.value = end_year
 }
 
-// function setSubGroup() {
-
-// }
-// sets selected key to true for current data source and false for all others
-/*
-function updateDataFromSubGroup() { 
-
-    // let source = getCurrentGraph()
-    // keys from data sources dict
-   let values = ["citations", "papers", "roads", "internet", "patent"];
-   let functions = [citationsGraph, papersGraph, roadGraph, internetUseGraph, patentGraph]
-   let current_value = document.getElementById("data_source").value;
-   if (values.indexOf(current_value) > -1) {
-      functions[values.indexOf(current_value)]();
-      setDataSource(current_value);
-    //   updateGroupSelector();
-   }
-   else 
-      console.log("Error, this value is not associated with a valid graph");
-   
+function updateYearRange() {
+    start_sel = document.getElementById("start_year");
+    end_sel = document.getElementById("end_year");
+    start_year = parseInt(start_sel.options[start_sel.selectedIndex].text)
+    end_year = parseInt(end_sel.options[end_sel.selectedIndex].text)
+    console.log("--update--")
+    console.log(start_year)
+    console.log(end_year)
+    updateDataFromGroup()
 }
-*/
+
 // updates graph to chosen sub-group from dataSource
-function updateDataFromSubGroup() {
-    console.log("updating subgroup")
-
-   let current_subgroup = document.getElementById("subgroup");
-   setSubGroup(current_subgroup);
-   // build graph
+function updateDataFromGroup() {
+   console.log("updating Group")
+   let sel =  document.getElementById("Group")
+   let current_group = sel.options[sel.selectedIndex].text;
+   // update ccc_dataSources
+   setGroup(current_group)
+   // rebuild graph
    source = getSelectedDataSource();
    buildGraph = source["generative_func"];
    window[buildGraph]();
@@ -100,7 +98,7 @@ function updateDataFromSubGroup() {
 //         //   });
 //       }
 //       else {
-//         // find which subgroup is selected
+//         // find which Group is selected
 //          ccc_dataSources.internet.groups = {
 //             chinaOnly: current_value == values[1] ? true: false,
 //             usOnly: current_value == values[2] ? true: false,
@@ -145,16 +143,22 @@ function updateDataFromSubGroup() {
 }
 // updates the options in sub-group selector based on chosen data source
 function setGroupSelectorGroups() {
-    console.log("settings group selec")
-    group_selector = document.getElementById("subgroup");
+    console.log("setting groups for data source")
+    group_selector = document.getElementById("Group");
     // set first option
     group_selector.options[0] = new Option(full_data_string, "full");
-    // add subgroups of the selected source to subgroup selector (dropdown menu)
+    // add Groups of the selected source to Group selector (dropdown menu)
     currentSource = getSelectedDataSource()
     let groups = currentSource.groups
-    for (let i = 0; i < currentSource.groups.length; i++) {
-        group_selector.options[group_selector.options.length] = new Option(groups[i], groups[i]);
-     }
+    // clear the selector
+    for (i = group_selector.length; i >= 0; i--)
+        group_selector.remove(i);
+    Object.keys(groups).forEach(group => {
+        group_selector.options[group_selector.options.length] = new Option(group, group);
+    })
+    // for (let i = 0; i < currentSource.groups.length; i++) {
+    //     group_selector.options[group_selector.options.length] = new Option(groups[i], groups[i]);
+    //  }
    // check that the values haven't already been updated
 //    if (ccc_dataSources.internet.selected) {
 //       let text = [full_data_string, "China (domestic)", "United States (domestic)", "Broadband", "Access", "Mobile"]
@@ -181,7 +185,7 @@ function setGroupSelectorGroups() {
 //          group_selector.options[0] = new Option(text[i], values[i]);
 //       } 
 //    }
-//    updateDataFromSubGroup();
+//    updateDataFromGroup();
 }
 
 function set_all_other_keys_false(dict, trueKey) {
@@ -198,8 +202,8 @@ function downloadDataSource() {
     download_button = document.getElementById("source_downloader");
     Object.keys(ccc_dataSources).forEach(key => {
         if (ccc_dataSources[key].selected) {
-            download_button.href = base + ccc_dataSources[key].filepath;
-            console.log(base + ccc_dataSources[key].filepath);
+            download_button.href = ccc_dataSources[key].filepath;
+            console.log(ccc_dataSources[key].filepath);
         }
         });
     }
@@ -270,13 +274,13 @@ function toggleAnimation() {
     if (animate.className == "fa-solid fa-video fa-2x") {
         animate.className = "fa-solid fa-video-slash fa-2x";
         animateGraph = false;
-        updateDataFromSubGroup();
+        updateDataFromGroup();
         //   text.textContent = "No Animation"
     }
     else {
         animate.className = "fa-solid fa-video fa-2x";
         animateGraph = true;
-        updateDataFromSubGroup();
+        updateDataFromGroup();
         //   text.textContent = "Animate!"
     }
 
@@ -312,7 +316,7 @@ function updateGraphType() {
     for (let i = 0; i < values.length; i++) {
     if (values[i] == current_value) {
         funcs[i]();
-        updateDataFromSubGroup();
+        updateDataFromGroup();
     }
     }
 
