@@ -140,6 +140,7 @@
                    </div>
                 </div>
              </div>
+             
              <!-- Filters -->
              <div id="filters">
                 <div id="choose_data">
@@ -264,6 +265,71 @@
           <div id="data-container">
              <!-- Animation Toggle/Help Modal -->
              <div id="floating_buttons">
+                <!-- Filter Accordian -->
+                <div class="filter-accordion-container">
+                    <!-- <h2>Research Categories</h2> -->
+                    <button class="accordion">SELECT SUB-GROUP</button>
+                    <div class="filter-accordion-content">
+                    <div class="sized-box"></div>
+                        <div class="dropdown-content">
+                            <div class="dropdown-content-line">
+                                <a href="javascript:papersGraph()">Academic Papers</a>
+                                <span id="avg-papers">/yr</span>
+                            </div>
+                            <div class="dropdown-content-line">
+                                <a href="javascript:citationsGraph();">Aggregate Citations</a>
+                                <span id="avg-income">/yr</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span>from</span>
+                    <button class="accordion">START YEAR </button>
+                    <div class="accordion-content">
+                    <div class="sized-box"></div>
+                    <div class="dropdown-content">
+                        <div class="dropdown-content-line">
+                            <a href="javascript:hi();">Income</a>
+                            <span id="avg-income">USD</span>
+                        </div>
+                        <div class="dropdown-content-line">
+                            <a href="">Consumption</a>
+                            <span id="avg-income">USD</span>
+                        </div>
+                    </div>
+                    </div>
+
+                    <button class="accordion">END YEAR</button>
+                    <div class="accordion-content">
+                    <div class="sized-box"></div>
+                    <div class="dropdown-content">
+                        <div class="dropdown-content-line">
+                            <a href="javascript:roadGraph();">Public Roads</a>
+                            <span id="avg-papers">/yr</span>
+                        </div>
+                        <div class="dropdown-content-line">
+                            <a href="javascript:roadGraph();">Highways/Expressways</a>
+                            <span id="avg-income">/yr</span>
+                        </div>
+        
+                    </div>
+                    </div>
+
+                    <span>with type</span>
+
+                    <button class="accordion">GRAPH TYPE</button>
+                    <div class="accordion-content">
+                    <div class="sized-box"></div>
+                    <div class="dropdown-content">
+                            <div class="dropdown-content-line">
+                                <!-- reformat updateGraphType function -->
+                                <a id = "line-chart" class="filter-hover" onclick="stackChart()">Line Chart</a>
+                            </div>
+                            <div class="dropdown-content-line">
+                                <a id="stack-chart" class="filter-hover" onclick="lineChart()">Stack Chart</a>
+                            </div>
+                    </div>
+                    </div>
+                </div>
                 <div id ="help_buttons">
                     <!-- Animation Button -->
                     <a class="downloader">

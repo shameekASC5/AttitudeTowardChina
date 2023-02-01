@@ -236,22 +236,10 @@ const buildCitationGraph = function(data) {
     setDataSource("citations");
     graph = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-   
    // Line(s) declaration
    let USA_citations =  d3.line()
-   .x(function(d) { 
-    //    // only add items in specified date range
-    //    if (d.year >= parseTime(start_year) && d.year <= parseTime(end_year)) {
-
-    //        if (start_year != 1800)
-    //             console.log(d.year)
-    //     }
-        // console.log("damn")
-           return x(d.year);
-
-    })
-   .y(function(d) { 
-        return y(d.us_paper_citation); });
+   .x(function(d) { return x(d.year);})
+   .y(function(d) { return y(d.us_paper_citation);});
 
    let PRC_citations =  d3.line()
    .x(function(d) { return x(d.year); })
@@ -264,7 +252,7 @@ const buildCitationGraph = function(data) {
    // Axis declaration
    let xAxis = setXAxisToYears();
        
-  let yAxis = graph.append("g")
+   let yAxis = graph.append("g")
        .attr("class", "y-axis")
        .attr("transform", `translate(${margin.left},0)`)
        .call(d3.axisLeft(y).tickFormat(function(d){return d/1000000}).tickSizeOuter(0))
@@ -279,13 +267,14 @@ const buildCitationGraph = function(data) {
        .attr("text-anchor", "end")
        .text("Yearly Number of Citations (millions)")
    
+    // styling
    var defs = svg.append("defs").append("clipPath")
       .attr("id", "clip")
       .append("rect")
       .attr("x", margin.left)
       .attr("width", width - margin.right)
       .attr("height", height);
-   
+   // declare lines, colors and names
    let lines = [USA_citations, PRC_citations];
    let colors = [USA_primary, PRC_primary];
    let lineNames = ["US Paper Citations", "PRC Paper Citations"];
@@ -329,6 +318,7 @@ const buildCitationGraph = function(data) {
 			.attr("text-anchor", "middle")
 			.attr("dy", ".35em");
 
+    //  change position of text
       focus.append("text")
          .attr("class", "usa")
          .attr("x", 280)
@@ -1139,6 +1129,19 @@ const roadFileConversion = function (d) {
    d["US: Length of Interstate and Other Freeways and Expressways (by 10,000 kilometers)"] = +d["US: Length of Interstate and Other Freeways and Expressways (by 10,000 kilometers)"].replace(/,/g, "");
 
    return d;
+}
+
+// template functions
+const templateFileConversion = function(d) {
+    d.year = parseTime(d.year);
+    // for each column/feature of the dataset, convert to numbers, return d
+};
+
+function templateGraph() {
+    // clear graph
+    d3.selectAll("svg>*").remove();
+    setDataSource("name from config file key-pair");
+    gatherData("filepath from config file", templateFileConversion).then(buildCitationGraph);
 }
 
 function citationsGraph() {
