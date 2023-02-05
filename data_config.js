@@ -1,6 +1,9 @@
 full_data_string = "All Data"
 animateGraph = false; // determines whether lines will animate
 
+// Client for new data source setup (CMD program)
+// name, filepath, min/max year, csv header/column names (groups) with colors
+
 ccc_dataSources = [
     {
        "name": "citations",

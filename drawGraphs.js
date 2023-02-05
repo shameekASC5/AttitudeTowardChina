@@ -44,7 +44,7 @@ function animateSolidLine(path) {
       .duration(animationDuration*1000);
       // .on("end", () => setTimeout(repeat, 1000)); // this will repeat the animation after waiting 1 second
 };
-
+// dashing is the offset between rect chunks
 function animateDashedLine(path, dashing) {
    // Derived From: https://www.visualcinnamon.com/2016/01/animating-dashed-line-d3/
    let length = path.node().getTotalLength();
@@ -65,7 +65,7 @@ function animateDashedLine(path, dashing) {
       .attr("stroke-linecap","square")
       .attr("stroke-dashoffset", 0);
 }
-
+// dashing is the offset between circle chunks
 function animateDottedLine(path, dashing) {
    // Derived From: https://www.visualcinnamon.com/2016/01/animating-dashed-line-d3/
    let length = path.node().getTotalLength();
